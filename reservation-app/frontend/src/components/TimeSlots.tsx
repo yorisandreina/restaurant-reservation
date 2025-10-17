@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useTimeSlots } from "@/hooks/useTimeSlots";
 
 interface TimeSlot {
   id: number;
@@ -6,32 +6,13 @@ interface TimeSlot {
   time: string;
 }
 
-const TimeSlots: React.FC = () => {
-  const [slots, setSlots] = useState<TimeSlot[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+interface Props {
+    date: string;
+    people: number;
+}
 
-  useEffect(() => {
-    const url = "/api/time-slots";
-
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        setSlots(data);
-        setError(null);
-      } catch (err: any) {
-        console.error("Error fetching time-slots:", err);
-        setError(err.message || "Error desconocido");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+const TimeSlots: React.FC<Props> = ({ date, people }) => {
+  const { slots, loading, error} = useTimeSlots(date, people);
 
   if (loading) return <div className="p-4">Cargando slots...</div>;
   if (error) return <div className="p-4 text-red-600">Error: {error}</div>;
@@ -39,9 +20,9 @@ const TimeSlots: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold mb-2">Time Slots</h2>
+      <h2 className="text-xl font-semibold mb-2">Horarios Disponibles</h2>
       <ul className="space-y-2">
-        {slots.map((s) => (
+        {slots.map((s: TimeSlot) => (
           <li
             key={s.id}
             className="border p-3 rounded-md bg-white shadow-sm"

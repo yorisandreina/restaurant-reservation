@@ -1,11 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
-import TimeSlots from './components/TimeSlots.tsx'
+import BookingScreen from './screens/BookingScreen.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <TimeSlots />
+    <BookingScreen />
   </StrictMode>,
 )

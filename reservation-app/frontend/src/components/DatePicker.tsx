@@ -6,13 +6,13 @@ interface Props {
 }
 
 const DatePicker: React.FC<Props> = ({ value, onChange }) => (
-  <div className="flex flex-col items-center mb-4">
-    <label className="text-sm font-medium mb-2">Fecha</label>
+  <div className="flex flex-col items-left">
+    <label className="text-sm font-medium mb-2 text-gray-400">Fecha</label>
     <input
       type="date"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="border rounded-md px-3 py-2"
+      className="border rounded-md bg-white shadow-sm focus:outline-none px-3 py-2"
     />
   </div>
 );

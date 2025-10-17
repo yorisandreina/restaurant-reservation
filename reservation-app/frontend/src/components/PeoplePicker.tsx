@@ -6,16 +6,16 @@ interface Props {
 }
 
 const PeoplePicker: React.FC<Props> = ({ value, onChange }) => (
-  <div className="flex flex-col items-center mb-4">
-    <label className="text-sm font-medium mb-2">Número de personas</label>
+  <div className="flex flex-col items-left">
+    <label className="text-sm font-medium mb-2 text-gray-400">Personas</label>
     <select
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
-      className="border rounded-md px-3 py-2"
+      className="border rounded-md bg-white shadow-sm focus:outline-none px-3 py-2 w-30"
     >
-      {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
         <option key={n} value={n}>
-          {n} {n === 1 ? "persona" : "personas"}
+          {n}
         </option>
       ))}
     </select>
