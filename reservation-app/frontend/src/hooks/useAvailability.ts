@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
 
-interface Availability {
-  available: boolean;
-  table_id?: number;
-  message: string;
-}
-
 export const useAvailability = (
   businessId: number,
   date: string,
@@ -16,7 +10,7 @@ export const useAvailability = (
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!businessId || !date|| !people) return;
+    if (!businessId || !date || !people) return;
 
     const fetchAvailability = async () => {
       try {
@@ -28,7 +22,7 @@ export const useAvailability = (
         });
         const res = await fetch(`/api/availability?${params.toString()}`);
         if (!res.ok) {
-          const errorBody = await res.text(); // o .json() si el backend manda JSON
+          const errorBody = await res.text();
           throw new Error(`HTTP ${res.status} ${res.statusText}: ${errorBody}`);
         }
         const data: any = await res.json();
