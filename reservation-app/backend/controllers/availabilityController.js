@@ -13,7 +13,6 @@ export const checkAvailability = async (req, res) => {
   try {
     const dow = new Date(date).getDay(); // 1=lunes, 7=domingo
 
-    // Duración de la reserva
     const reservationSlots = await getReservationDurationByBusiness(
       business_id,
       dow
@@ -28,13 +27,12 @@ export const checkAvailability = async (req, res) => {
     const { start_time, end_time, slot_min, max_duration } =
       reservationSlots[0];
 
-    const reservationDuration = Number(max_duration); // en minutos
+    const reservationDuration = Number(max_duration);
     console.log("reservation duration", reservationDuration);
 
-    const slotInterval = Number(slot_min); // intervalos en minutos
+    const slotInterval = Number(slot_min);
     console.log("slot interval", slotInterval);
 
-    // Mesas disponibles
     const tables = await getTablesByBusiness(business_id);
     console.log("tables", tables);
 
@@ -44,8 +42,6 @@ export const checkAvailability = async (req, res) => {
     }
     console.log("valid tables", validTables);
 
-
-    // Reservas del día
     const reservations = await getReservationsByBusinessAndDate(
       business_id,
       date
@@ -67,13 +63,27 @@ export const checkAvailability = async (req, res) => {
     console.log("reservations by table", reservationsByTable)
 
     const availableSlots = [];
+
     let slotStartTime = new Date(`${date}T${start_time}:00Z`).getTime();
     const endTime = new Date(`${date}T${end_time}:00Z`).getTime();
-    console.log("slot start time", slotStartTime);
-    console.log("slot end time", endTime);
+
+    const madridOffsetHours = 2;
+    const now = new Date();
+    const nowTime = now.getTime() + madridOffsetHours * 60 * 60 * 1000;
+
+    const selectedDate = new Date(date);
+    const isToday =
+      selectedDate.getFullYear() === now.getFullYear() &&
+      selectedDate.getMonth() === now.getMonth() &&
+      selectedDate.getDate() === now.getDate();
 
     while (slotStartTime + reservationDuration * 60000 <= endTime) {
       const slotEndTime = slotStartTime + reservationDuration * 60000;
+
+      if (isToday && slotStartTime < nowTime) {
+        slotStartTime += slotInterval * 60000;
+        continue;
+      }
 
       let freeTables = 0;
 
@@ -91,7 +101,6 @@ export const checkAvailability = async (req, res) => {
         available_tables: freeTables,
       });
 
-      // Avanzar al siguiente slot
       slotStartTime += slotInterval * 60000;
     }
 
