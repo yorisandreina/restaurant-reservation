@@ -6,7 +6,7 @@ interface TimeSlot {
   time: string;
 }
 
-export const useTimeSlots = (date: string, people: number) => {
+export const useTimeSlots = (date: string, people: number, time: number) => {
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

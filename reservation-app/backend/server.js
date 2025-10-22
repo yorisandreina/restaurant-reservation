@@ -2,6 +2,7 @@ import express from "express";
 import axios from "axios";
 import cors from "cors";
 import dotenv from "dotenv";
+import { checkAvailability } from "./controllers/availabilityController.js";
 
 dotenv.config();
 const app = express();
@@ -10,6 +11,8 @@ app.use(express.json());
 
 const baseUrl = process.env.XANO_BASE_URL;
 const apiKey = process.env.XANO_API_KEY;
+
+app.get("/availability", checkAvailability);
 
 app.get("/time-slots", async (req, res) => {
   try {
