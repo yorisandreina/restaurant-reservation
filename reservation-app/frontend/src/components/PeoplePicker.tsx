@@ -1,4 +1,5 @@
 import React from "react";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 interface Props {
   value: number;
@@ -7,18 +8,21 @@ interface Props {
 
 const PeoplePicker: React.FC<Props> = ({ value, onChange }) => (
   <div className="flex items-center gap-2">
-    <label className="text-sm font-small mb-2 text-gray-400">Pax</label>
-    <select
-      value={value}
-      onChange={(e) => onChange(Number(e.target.value))}
-      className="border rounded-md bg-white shadow-sm focus:outline-none px-3 py-2 w-full"
-    >
-      {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-        <option key={n} value={n}>
-          {n}
-        </option>
-      ))}
-    </select>
+    <label className="text-sm font-small text-gray-400">Pax</label>
+    <Select value={value?.toString()} onValueChange={(e) => onChange(Number(e))}>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder={value?.toString()} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+            <SelectItem key={n} value={n.toString()}>
+              {n}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   </div>
 );
 

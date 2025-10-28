@@ -38,7 +38,7 @@ export const checkAvailability = async (req, res) => {
 
     const validTables = tables.filter((t) => t.max_capacity >= Number(people));
     if (!validTables.length) {
-      return res.json([]);
+      return null;
     }
     console.log("valid tables", validTables);
 
@@ -47,18 +47,19 @@ export const checkAvailability = async (req, res) => {
       date
     );
     const activeReservations = reservations.filter(
-      (r) => r.estado !== "cancelled" && r.estado !== "no_show"
+      (r) => r.estado !== "CANCELLED" && r.estado !== "NO_SHOW"
     );
     console.log("reservations", reservations);
 
     const reservationsByTable = new Map();
     for (const r of activeReservations) {
-      const mesaId = r.mesa_id;
+      const mesaId = r.table_id;
+
+      const start = new Date(`${r.date}T${r.time}:00Z`).getTime();
+      const end = start + reservationDuration * 60 * 1000;
+
       if (!reservationsByTable.has(mesaId)) reservationsByTable.set(mesaId, []);
-      reservationsByTable.get(mesaId).push({
-        start: new Date(r.inicio).getTime(),
-        end: new Date(r.fin).getTime(),
-      });
+      reservationsByTable.get(mesaId).push({ start, end });
     }
     console.log("reservations by table", reservationsByTable)
 
@@ -70,12 +71,15 @@ export const checkAvailability = async (req, res) => {
     const madridOffsetHours = 2;
     const now = new Date();
     const nowTime = now.getTime() + madridOffsetHours * 60 * 60 * 1000;
+    console.log("now time", nowTime)
 
     const selectedDate = new Date(date);
+    console.log("selected date", selectedDate);
     const isToday =
       selectedDate.getFullYear() === now.getFullYear() &&
       selectedDate.getMonth() === now.getMonth() &&
       selectedDate.getDate() === now.getDate();
+    console.log("is today", isToday);
 
     while (slotStartTime + reservationDuration * 60000 <= endTime) {
       const slotEndTime = slotStartTime + reservationDuration * 60000;
@@ -85,20 +89,22 @@ export const checkAvailability = async (req, res) => {
         continue;
       }
 
-      let freeTables = 0;
+      let freeTables = [];
 
       for (const table of validTables) {
         const tableReservations = reservationsByTable.get(table.id) || [];
         const hasConflict = tableReservations.some(
           (r) => !(slotEndTime <= r.start || slotStartTime >= r.end)
         );
-        if (!hasConflict) freeTables++;
+        if (!hasConflict) freeTables.push(table.id);
       }
 
       availableSlots.push({
         hora: new Date(slotStartTime).toISOString().slice(11, 16),
-        disponible: freeTables > 0,
-        available_tables: freeTables,
+        disponible: freeTables.length > 0,
+        cantidad_mesas_disp: freeTables.length,
+        mesas_disponibles: freeTables,
+        mesa_sugerida: freeTables[0],
       });
 
       slotStartTime += slotInterval * 60000;
