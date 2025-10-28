@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { ArrowLeft, CircleCheck } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
