@@ -1,0 +1,70 @@
+import { useState } from "react";
+
+interface AuthResponse {
+  token?: string;
+  user?: any;
+  message?: string;
+}
+
+export const useAuth = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const signup = async (
+    email: string,
+    password: string
+  ): Promise<AuthResponse | null> => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || "Error al crear la cuenta");
+      }
+
+      return await res.json();
+    } catch (err: any) {
+      setError(err.message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = async (
+    username: string,
+    password: string
+  ): Promise<AuthResponse | null> => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || "Error al iniciar sesión");
+      }
+
+      return await res.json();
+    } catch (err: any) {
+      setError(err.message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { signup, login, loading, error };
+};

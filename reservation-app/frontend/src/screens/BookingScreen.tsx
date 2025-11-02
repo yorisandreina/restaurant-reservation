@@ -64,6 +64,10 @@ const BookingScreen: React.FC = () => {
     }
   };
 
+  const navigateToAuth = () => {
+    navigate("/client-auth")
+  }
+
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">
@@ -94,6 +98,13 @@ const BookingScreen: React.FC = () => {
         disabled={!date || !selectedTimeSlot}
       >
         {loading ? <Spinner className="size-5" /> : "Continuar"}
+      </Button>
+      <Button
+        className="mt-4 w-full max-w-sm hover:bg-transparent"
+        variant="outline"
+        onClick={() => navigate("/client-auth")}
+      >
+        I am a client
       </Button>
 
       <BookingDetailsModal

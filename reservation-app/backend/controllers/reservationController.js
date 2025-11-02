@@ -2,8 +2,6 @@ import { createReservationInDB } from "../models/reservationModel.js";
 
 export const createReservation = async (req, res) => {
   try {
-    console.log("createReservation called with:", req.body);
-
     const { business_id, table_id, date, people, time, name, lastName, email, phone } =
       req.body;
 
@@ -21,7 +19,6 @@ export const createReservation = async (req, res) => {
       return res.status(400).json({ error: "Faltan parámetros obligatorios" });
     }
 
-    // 👇 Aquí le pasas un solo objeto al modelo
     const newReservation = await createReservationInDB({
       business_id,
       table_id,
