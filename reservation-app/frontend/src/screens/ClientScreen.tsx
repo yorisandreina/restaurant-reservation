@@ -1,0 +1,34 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import OptionSection from "@/components/OptionSection";
+import CurrentReservations from "@/components/CurrentReservations";
+import BookingSection from "@/components/BookingSection";
+import SettingsSection from "@/components/SettingsSection";
+
+const ClientScreen: React.FC = () => {
+  const navigate = useNavigate();
+  const [selectedOption, setSelectedOption] = useState("reservations");
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col items-center">
+      <div className="flex flex-wrap item-center justify-between pt-4 gap-4">
+        <OptionSection value={selectedOption} onChange={setSelectedOption} />
+      </div>
+      {selectedOption === "reservations" ? (
+        <div className="w-full items-center">
+          <CurrentReservations businessId={1} />
+        </div>
+      ) : selectedOption === "new" ? (
+        <div className="w-full items-center mt-4">
+          <BookingSection businessId={0} />
+        </div>
+      ) : (
+        <div className="w-full items-center">
+          <SettingsSection businessId={1} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ClientScreen;

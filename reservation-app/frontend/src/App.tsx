@@ -4,6 +4,7 @@ import BookingScreen from './screens/BookingScreen'
 import SuccessScreen from './screens/SuccessScreen'
 import ClientAuthScreen from './screens/ClientAuthScreen';
 import NewClientDetailsScreen from './screens/NewClientDetailsScreen';
+import ClientScreen from './screens/ClientScreen';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Route path="/success" element={<SuccessScreen />} />
       <Route path="/client-auth" element={<ClientAuthScreen />} />
       <Route path="/client-details" element={<NewClientDetailsScreen />} />
+      <Route path="/client-home" element={<ClientScreen />} />
     </Routes>
   );
 }

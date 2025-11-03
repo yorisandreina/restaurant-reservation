@@ -5,7 +5,7 @@ interface Props {
 }
 
 const Header: React.FC<Props> = ({ name }) => (
-  <header className="text-center pt-6 pb-4">
+  <header className="pt-6 pb-4">
     <h1 className="text-3xl font-bold">{name}</h1>
   </header>
 );
