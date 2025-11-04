@@ -8,7 +8,6 @@ export const getReservationsByBusinessAndDate = async (business_id, date) => {
 };
 
 export const createReservationInDB = async (reservationData) => {
-  console.log("data received in model", reservationData)
   const { data } = await apiClient.post("/reservations", reservationData);
   return data;
 };
