@@ -5,6 +5,7 @@ import { createReservation } from "./controllers/reservationController.js";
 import { clientSignupController } from "./controllers/clientSignupController.js";
 import { clientLoginController } from "./controllers/clientLoginController.js";
 import { getReservations } from "./controllers/getReservationsController.js";
+import { getTables, setTable } from "./controllers/tableController.js";
 
 const app = express();
 app.use(cors());
@@ -19,6 +20,10 @@ app.post("/signup", clientSignupController);
 app.post("/login", clientLoginController);
 
 app.get("/reservations", getReservations);
+
+app.get("/tables", getTables);
+
+app.post("/set-tables", setTable);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () =>

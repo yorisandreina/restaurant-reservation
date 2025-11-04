@@ -1,7 +1,7 @@
 import { useGetReservations } from "@/hooks/useGetReservations";
 import React from "react";
 import { Spinner } from "./ui/spinner";
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent } from "./ui/card";
 import { SquarePen, CircleX } from "lucide-react";
 
 interface ReservationProps {
@@ -46,8 +46,8 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId }) => {
             <div className="flex flex-row justify-between items-center mb-1">
               <strong>{reservation.name}</strong>
               <div className="flex flex-row items-center gap-2">
-                <SquarePen size={20} color="#5b5b5b" />
-                <CircleX size={20} color="#e20404" />
+                {/* <SquarePen size={20} color="#5b5b5b" /> */}
+                <CircleX size={20} color="#e20404" className="cursor-pointer" />
               </div>
             </div>
             <p className="mb-1">

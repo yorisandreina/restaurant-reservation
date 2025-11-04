@@ -9,3 +9,8 @@ export const getTablesByBusiness = async (business_id) => {
 
   return filtered;
 };
+
+export const createTable = async (tableData) => {
+  const { data } = await apiClient.post("/tables", tableData);
+  return data;
+};

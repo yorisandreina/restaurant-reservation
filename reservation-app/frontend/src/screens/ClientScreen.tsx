@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import OptionSection from "@/components/OptionSection";
 import CurrentReservations from "@/components/CurrentReservations";
 import BookingSection from "@/components/BookingSection";
 import SettingsSection from "@/components/SettingsSection";
 
 const ClientScreen: React.FC = () => {
-  const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState("reservations");
 
   return (
@@ -24,7 +22,7 @@ const ClientScreen: React.FC = () => {
         </div>
       ) : (
         <div className="w-full items-center">
-          <SettingsSection businessId={1} />
+          <SettingsSection />
         </div>
       )}
     </div>

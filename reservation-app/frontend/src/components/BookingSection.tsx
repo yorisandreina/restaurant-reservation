@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
 import PeoplePicker from "../components/PeoplePicker";
 import DatePicker from "../components/DatePicker";
 import AvailableTimeSlots from "../components/AvailableTimeSlots";
