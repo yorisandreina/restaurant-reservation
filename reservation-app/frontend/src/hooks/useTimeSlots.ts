@@ -1,25 +1,42 @@
 import { useEffect, useState } from "react";
 
-interface TimeSlot {
-  id: number;
-  day_of_week: string;
-  time: string;
+interface Params {
+  businessId: number;
 }
 
-export const useTimeSlots = (date: string, people: number) => {
-  const [slots, setSlots] = useState<TimeSlot[]>([]);
+interface TimeSlot {
+  businessId: number;
+  dow: number;
+  closed: boolean;
+  startTime: string;
+  endTime: string;
+  slotMin: number;
+  maxDuration: number;
+}
+
+export const getTimeSlots = (params: Params) => {
+  const [slots, setSlots] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!date) return;
-
     const fetchSlots = async () => {
+      if (!params.businessId) {
+        setError("Todos los campos son obligatorios");
+        return;
+      }
+
       try {
         setLoading(true);
-        const url = "/api/time-slots";
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const res = await fetch(
+          `/api/time-slots?business_id=${params.businessId}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+
         const data = await res.json();
         setSlots(data);
         setError(null);
@@ -32,7 +49,56 @@ export const useTimeSlots = (date: string, people: number) => {
     };
 
     fetchSlots();
-  }, [date, people]);
+  }, [params.businessId]);
 
   return { slots, loading, error };
+};
+
+export const createTimeSlots = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const postTimeSlots = async (body: TimeSlot[]) => {
+    try {
+      setLoading(true);
+      setError(null);
+      setMessage(null);
+
+      const res = await fetch("/api/set-time-slots", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          body.map((d) => ({
+            business_id: d.businessId,
+            dow: d.dow,
+            closed: d.closed,
+            start_time: d.startTime,
+            end_time: d.endTime,
+            slot_min: d.slotMin,
+            max_duration: d.maxDuration,
+          }))
+        ),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Error al guardar horario");
+      }
+
+      if (data?.message) {
+        setMessage(data.message);
+      }
+
+      return data;
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { postTimeSlots, loading, error, message };
 };

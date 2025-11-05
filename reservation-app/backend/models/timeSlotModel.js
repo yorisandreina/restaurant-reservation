@@ -9,8 +9,19 @@ export const getReservationDurationByBusiness = async (business_id, dow) => {
       Number(slot.dow) === Number(dow)
   );
 
-  const maxDuration =
-    filtered.length > 0 ? Number(filtered[0].max_duration) : null;
-
   return filtered;
+};
+
+export const getBusinessTimeSlots = async (business_id) => {
+  const { data } = await apiClient.get("/time_slots", {
+    params: { business_id },
+  });
+  return data;
+};
+
+export const createTimeSlots = async (timeSlotsData) => {
+  const { data } = await apiClient.post("/time_slots", timeSlotsData);
+  console.log(data);
+  console.log(typeof data)
+  return data;
 };

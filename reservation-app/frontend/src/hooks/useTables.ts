@@ -59,11 +59,11 @@ export const getTables = (params: Params) => {
   return { data, loading, error };
 };
 
-export const useCreateTable = () => {
+export const createTable = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createTable = async (body: NewTable) => {
+  const postTable = async (body: NewTable) => {
     try {
       setLoading(true);
       setError(null);
@@ -95,5 +95,5 @@ export const useCreateTable = () => {
     }
   };
 
-  return { createTable, loading, error };
+  return { postTable, loading, error };
 };

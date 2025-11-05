@@ -21,6 +21,7 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
   const [tableId, setTableId] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const { loading, error, createReservation } = useReservation();
 
@@ -52,23 +53,16 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
 
     if (reservationCreated) {
       setShowModal(false);
-      navigate("/success", {
-        state: {
-          reservation: {
-            name: formData.name,
-            lastName: formData.lastName,
-            date,
-            time: selectedTimeSlot,
-            people,
-            phone: formData.phone,
-          },
-        },
-      });
-    }
-  };
 
-  const navigateToAuth = () => {
-    navigate("/client-auth");
+      setPeople(2);
+      setDate("");
+      setSelectedTimeSlot("");
+      setTableId(0);
+
+      setShowSuccess(true);
+
+      setTimeout(() => setShowSuccess(false), 5000);
+    }
   };
 
   return (
@@ -100,6 +94,14 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
       >
         {loading ? <Spinner className="size-5" /> : "Continuar"}
       </Button>
+      {showSuccess && (
+        <Alert
+          variant="default"
+          className="my-4 w-sm border-none justify-center flex bg-green-100 text-green-700"
+        >
+          <AlertTitle>Reserva creada</AlertTitle>
+        </Alert>
+      )}
 
       <BookingDetailsModal
         open={showModal}

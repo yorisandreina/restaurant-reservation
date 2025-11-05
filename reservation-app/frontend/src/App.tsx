@@ -6,6 +6,7 @@ import ClientAuthScreen from './screens/ClientAuthScreen';
 import NewClientDetailsScreen from './screens/NewClientDetailsScreen';
 import ClientScreen from './screens/ClientScreen';
 import TablesScreen from './screens/TablesScreen';
+import TimeSlotsScreen from './screens/TimeSlotsScreen';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/client-details" element={<NewClientDetailsScreen />} />
       <Route path="/client-home" element={<ClientScreen />} />
       <Route path="/tables" element={<TablesScreen />} />
+      <Route path="/time-slots" element={<TimeSlotsScreen />} />
     </Routes>
   );
 }

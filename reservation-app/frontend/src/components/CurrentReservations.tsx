@@ -40,38 +40,48 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId }) => {
 
   return (
     <div className="flex flex-col gap-4 items-center p-5">
-      {reservationData?.data?.map((reservation: Reservation) => (
-        <Card className="w-full max-w-sm text-left">
-          <CardContent>
-            <div className="flex flex-row justify-between items-center mb-1">
-              <strong>{reservation.name}</strong>
-              <div className="flex flex-row items-center gap-2">
-                {/* <SquarePen size={20} color="#5b5b5b" /> */}
-                <CircleX size={20} color="#e20404" className="cursor-pointer" />
+      {reservationData?.data
+        ?.slice()
+        .sort(
+          (a: Reservation, b: Reservation) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
+        .map((reservation: Reservation) => (
+          <Card className="w-full max-w-sm text-left" key={reservation.id}>
+            <CardContent>
+              <div className="flex flex-row justify-between items-center mb-1">
+                <strong>{reservation.name}</strong>
+                <div className="flex flex-row items-center gap-2">
+                  <CircleX
+                    size={20}
+                    color="#e20404"
+                    className="cursor-pointer"
+                  />
+                </div>
               </div>
-            </div>
-            <p className="mb-1">
-              {formatDate(reservation.date)} | {reservation.time}
-            </p>
-            <div className="flex flex-row justify-between items-center gap-2">
-              <p>{reservation.phone}</p>
-              <p
-                className={
-                  reservation.status === "CONFIRMED"
-                    ? "text-green-500"
-                    : reservation.status === "CANCELLED"
-                    ? "text-red-500"
-                    : "text-gray-500"
-                }
-              >
-                {reservation.status}
+              <p className="mb-1">
+                {formatDate(reservation.date)} | {reservation.time}
               </p>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+              <div className="flex flex-row justify-between items-center gap-2">
+                <p>{reservation.phone}</p>
+                <p
+                  className={
+                    reservation.status === "CONFIRMED"
+                      ? "text-green-500"
+                      : reservation.status === "CANCELLED"
+                      ? "text-red-500"
+                      : "text-gray-500"
+                  }
+                >
+                  {reservation.status}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
     </div>
   );
+
 }
 
 export default CurrentReservations;

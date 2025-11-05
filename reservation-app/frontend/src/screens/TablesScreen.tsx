@@ -1,7 +1,7 @@
 import Table from "@/components/Table";
 import TableFormModal from "@/components/TableFormModal";
 import { Button } from "@/components/ui/button";
-import { useCreateTable } from "@/hooks/useTables";
+import { createTable } from "@/hooks/useTables";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ const TablesScreen = () => {
   const [openModal, setOpenModal] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const { createTable, loading, error } = useCreateTable();
+  const { postTable, loading, error } = createTable();
 
   const handleSubmit = async (formData: {
     name: string;
@@ -19,7 +19,7 @@ const TablesScreen = () => {
     maxCapacity: number;
     active: boolean;
   }) => {
-    const tableCreated = await createTable({
+    const tableCreated = await postTable({
         businessId: 1,
         name: formData.name,
         minCapacity: formData.minCapacity,
@@ -39,13 +39,15 @@ const TablesScreen = () => {
         <ArrowLeft onClick={() => navigate(-1)} className="cursor-pointer" />
         <h1 className="text-2xl font-semibold">Mesas</h1>
       </div>
-      <Button
-        variant={"outline"}
-        className="w-sm my-4"
-        onClick={() => setOpenModal(true)}
-      >
-        Agregar mesa
-      </Button>
+      {loading && (
+        <Button
+          variant={"outline"}
+          className="w-sm my-4"
+          onClick={() => setOpenModal(true)}
+        >
+          Agregar mesa
+        </Button>
+      )}
       <Table businessId={1} refreshKey={refreshKey} />
       <TableFormModal
         open={openModal}

@@ -1,11 +1,9 @@
-import { useGetReservations } from "@/hooks/useGetReservations";
 import React from "react";
-import { Spinner } from "./ui/spinner";
 import {
   Card,
   CardContent,
 } from "./ui/card";
-import { SquarePen, CircleX, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 
 const SettingsSection: React.FC = () => {
@@ -26,7 +24,7 @@ const SettingsSection: React.FC = () => {
       </Card>
       <Card 
         className="w-full max-w-sm text-left py-4 cursor-pointer"
-        onClick={() => navigate("/schedule")}
+        onClick={() => navigate("/time-slots")}
       >
         <CardContent>
           <div className="flex flex-row justify-between items-center mb-1">
