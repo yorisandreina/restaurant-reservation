@@ -8,6 +8,8 @@ import ConfirmationModal from "./ConfirmationModal";
 
 interface ReservationProps {
   businessId: number;
+  refreshKey: number;
+  onRefresh: () => void;
 }
 
 interface Reservation {
@@ -22,8 +24,8 @@ interface Reservation {
   table_id: number
 }
 
-const CurrentReservations: React.FC<ReservationProps> = ({ businessId }) => {
-  const { loading, error, reservationData } = useGetReservations({businessId});
+const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKey, onRefresh }) => {
+  const { loading, error, reservationData } = useGetReservations({businessId, refreshKey});
   const { loadingRes, errorRes, deleteReservation } = eraseReservation();
 
   const [selectedReservationId, setSelectedReservationId] = React.useState<number | null>(null);
@@ -44,9 +46,11 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId }) => {
 
   const handleConfirmDelete = async (confirmed: boolean) => {
     if (confirmed && selectedReservationId !== null) {
-      await deleteReservation(selectedReservationId);
+      const success = await deleteReservation(selectedReservationId);
+      if (success) onRefresh();
     }
     setSelectedReservationId(null);
+    setModalOpen(false);
   };
 
   if (loading || loadingRes)

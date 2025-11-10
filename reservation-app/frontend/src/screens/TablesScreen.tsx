@@ -46,7 +46,11 @@ const TablesScreen = () => {
       >
         Agregar mesa
       </Button>
-      <Table businessId={1} refreshKey={refreshKey} />
+      <Table
+        businessId={1}
+        refreshKey={refreshKey}
+        onRefresh={() => setRefreshKey((prev) => prev + 1)}
+      />
       <TableFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}

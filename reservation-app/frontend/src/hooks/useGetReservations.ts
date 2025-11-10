@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 interface Params {
   businessId: number;
+  refreshKey: number;
 }
 
 export const useGetReservations = (params: Params) => {
@@ -42,7 +43,7 @@ export const useGetReservations = (params: Params) => {
     };
 
     fetchReservations();
-  }, [params.businessId]);
+  }, [params.businessId, params.refreshKey]);
 
   return { reservationData, loading, error };
 };

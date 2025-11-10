@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Spinner } from "./ui/spinner";
 import { Card, CardContent } from "./ui/card";
 import { Trash2, Users } from "lucide-react";
-import { getTables } from "@/hooks/useTables";
+import { eraseTable, getTables } from "@/hooks/useTables";
 import { Badge } from "./ui/badge";
+import ConfirmationModal from "./ConfirmationModal";
 
 interface TableProps {
   businessId: number;
   refreshKey: number;
+  onRefresh: () => void;
 }
 
 interface Tables {
@@ -18,19 +20,37 @@ interface Tables {
   active: boolean;
 }
 
-const Table: React.FC<TableProps> = ({ businessId, refreshKey }) => {
+const Table: React.FC<TableProps> = ({ businessId, refreshKey, onRefresh }) => {
   const { loading, error, data } = getTables({
     businessId,
-    refreshKey
+    refreshKey,
   });
+  const { loadingTab, errorTab, deleteTable } = eraseTable();
 
-  if (loading)
+  const [selectedTableId, setSelectedTableId] = React.useState<number | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleDeleteClick = (tableId: number) => {
+    setSelectedTableId(tableId);
+    setModalOpen(true);
+  };
+
+  const handleConfirmDelete = async (confirmed: boolean) => {
+    if (confirmed && selectedTableId !== null) {
+      const success = await deleteTable(selectedTableId);
+      if (success) onRefresh();
+    }
+    setSelectedTableId(null);
+    setModalOpen(false);
+  };
+
+  if (loading || loadingTab)
     return (
       <div className="flex justify-center items-center w-full h-full mt-5">
         <Spinner className="size-8" />
       </div>
     );
-  if (error) return <p className="text-red-500">Error: {error}</p>;
+  if (error || errorTab) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="flex flex-col w-full gap-4 items-center p-2">
@@ -39,7 +59,12 @@ const Table: React.FC<TableProps> = ({ businessId, refreshKey }) => {
           <CardContent>
             <div className="flex flex-row justify-between items-center">
               <Badge className="px-2 py-1">{table.name}</Badge>
-              <Trash2 size={20} color="#e20404" />
+              <Trash2
+                size={20}
+                color="#e20404"
+                className="cursor-pointer"
+                onClick={() => handleDeleteClick(table.id)}
+              />
             </div>
             <div className="flex flex-row justify-between mt-3">
               <div className="flex gap-2 mb-1">
@@ -64,6 +89,11 @@ const Table: React.FC<TableProps> = ({ businessId, refreshKey }) => {
           </CardContent>
         </Card>
       ))}
+      <ConfirmationModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 };

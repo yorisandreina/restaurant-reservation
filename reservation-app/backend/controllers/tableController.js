@@ -1,4 +1,4 @@
-import { createTable, getTablesByBusiness,  } from "../models/tableModel.js";
+import { createTable, deleteTable, getTablesByBusiness,  } from "../models/tableModel.js";
 
 export const getTables = async (req, res) => {
   try {
@@ -42,6 +42,25 @@ export const setTable = async (req, res) => {
     });
 
     return res.status(201).json({ message: "Exito", data: newTable });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+export const eraseTable = async (req, res) => {
+  try {
+    const { tables_id } = req.query;
+
+    if (!tables_id) {
+      return res.status(400).json({ error: "Faltan parámetros obligatorios" });
+    }
+
+    const tableToDelete = await deleteTable(tables_id);
+
+    return res
+      .status(201)
+      .json({ message: "Éxito", data: tableToDelete });
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).json({ error: "Error interno del servidor" });

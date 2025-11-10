@@ -14,3 +14,8 @@ export const createTable = async (tableData) => {
   const { data } = await apiClient.post("/tables", tableData);
   return data;
 };
+
+export const deleteTable = async (table_id) => {
+  const { data } = await apiClient.delete(`/tables/${table_id}`);
+  return data;
+};

@@ -6,6 +6,7 @@ import SettingsSection from "@/components/SettingsSection";
 
 const ClientScreen: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState("reservations");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">
@@ -14,7 +15,11 @@ const ClientScreen: React.FC = () => {
       </div>
       {selectedOption === "reservations" ? (
         <div className="w-full items-center">
-          <CurrentReservations businessId={1} />
+          <CurrentReservations
+            businessId={1}
+            refreshKey={refreshKey}
+            onRefresh={() => setRefreshKey((prev) => prev + 1)}
+          />
         </div>
       ) : selectedOption === "new" ? (
         <div className="w-full items-center mt-4">

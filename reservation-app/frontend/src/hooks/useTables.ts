@@ -97,3 +97,46 @@ export const createTable = () => {
 
   return { postTable, loading, error };
 };
+
+export const eraseTable = () => {
+  const [reservation, setReservation] = useState<any | null>(null);
+  const [loadingTab, setLoadingTab] = useState(false);
+  const [errorTab, setErrorTab] = useState<string | null>(null);
+
+  const deleteTable = async (tableId: number) => {
+    if (!tableId) {
+      setErrorTab("Todos los campos son obligatorios");
+      return;
+    }
+
+    try {
+      setLoadingTab(true);
+      setErrorTab(null);
+
+      const res = await fetch(
+        `/api/delete-table?tables_id=${tableId}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!res.ok) {
+        const errorBody = await res.text();
+        throw new Error(`HTTP ${res.status} ${res.statusText}: ${errorBody}`);
+      }
+      const data = await res.json();
+      setReservation(data);
+      return true;
+    } catch (err: any) {
+      console.error("Error creating reservation:", err);
+      setErrorTab(err.message || "Error desconocido");
+      setReservation(null);
+      return false;
+    } finally {
+      setLoadingTab(false);
+    }
+  };
+
+  return { reservation, loadingTab, errorTab, deleteTable };
+};

@@ -5,7 +5,7 @@ import { createReservation, eraseReservation } from "./controllers/reservationCo
 import { clientSignupController } from "./controllers/clientSignupController.js";
 import { clientLoginController } from "./controllers/clientLoginController.js";
 import { getReservations } from "./controllers/getReservationsController.js";
-import { getTables, setTable } from "./controllers/tableController.js";
+import { eraseTable, getTables, setTable } from "./controllers/tableController.js";
 import { getTimeSlots, setTimeSlots } from "./controllers/timeSlotController.js";
 
 const app = express();
@@ -31,6 +31,8 @@ app.get("/time-slots", getTimeSlots);
 app.post("/set-time-slots", setTimeSlots);
 
 app.delete("/delete-reservation", eraseReservation);
+
+app.delete("/delete-table", eraseTable);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () =>
