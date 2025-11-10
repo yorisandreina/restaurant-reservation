@@ -38,7 +38,17 @@ export const checkAvailability = async (req, res) => {
 
     const validTables = tables.filter((t) => t.max_capacity >= Number(people));
     if (!validTables.length) {
-      return null;
+      return res.status(200).json([
+        {
+          hora: null,
+          disponible: false,
+          cantidad_mesas_disp: 0,
+          mesas_disponibles: [],
+          mesa_sugerida: null,
+          message: `No hay mesas disponibles para ${people} personas.`,
+          nextAvailability: null,
+        },
+      ]);
     }
     console.log("valid tables", validTables);
 

@@ -40,15 +40,21 @@ const AvailableTimeSlots: React.FC<AvailabilityDisplayProps> = ({
   if (loading) return <Spinner className="size-8"/>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
   if (!availability || availability.length === 0)
-    return <p>No disponibilidad en esa fecha.</p>;
+    return <p>No hay disponibilidad en esa fecha.</p>;
+  if (availability.length === 1 && availability[0].message) {
+    return <p className="w-sm">{availability[0].message} Puedes llamarnos para ayudarte con la solicitud.</p>;
+  }
 
   return (
     <div className="flex flex-wrap gap-2 w-sm justify-center">
-      {availability.map((slot: TimeSlot) => (
-        <Button
-          key={slot.hora}
-          onClick={() => slot.disponible && onChange(slot.hora, slot.mesa_sugerida)}
-          className={`px-3 py-2 rounded-md border font-medium text-black w-20
+      {availability[0].hora &&
+        availability.map((slot: TimeSlot) => (
+          <Button
+            key={slot.hora}
+            onClick={() =>
+              slot.disponible && onChange(slot.hora, slot.mesa_sugerida)
+            }
+            className={`px-3 py-2 rounded-md border font-medium text-black w-20
             ${
               slot.disponible
                 ? "bg-green-100 border-green-400 hover:bg-green-100"
@@ -56,11 +62,11 @@ const AvailableTimeSlots: React.FC<AvailabilityDisplayProps> = ({
             }
             ${value === slot.hora ? "ring-1 ring-neutral-400" : ""}
           `}
-          disabled={!slot.disponible}
-        >
-          {slot.hora}
-        </Button>
-      ))}
+            disabled={!slot.disponible}
+          >
+            {slot.hora}
+          </Button>
+        ))}
     </div>
   );
 };
