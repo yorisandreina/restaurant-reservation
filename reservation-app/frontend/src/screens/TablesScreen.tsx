@@ -39,15 +39,13 @@ const TablesScreen = () => {
         <ArrowLeft onClick={() => navigate(-1)} className="cursor-pointer" />
         <h1 className="text-2xl font-semibold">Mesas</h1>
       </div>
-      {loading && (
-        <Button
-          variant={"outline"}
-          className="w-sm my-4"
-          onClick={() => setOpenModal(true)}
-        >
-          Agregar mesa
-        </Button>
-      )}
+      <Button
+        variant={"outline"}
+        className="w-sm my-4"
+        onClick={() => setOpenModal(true)}
+      >
+        Agregar mesa
+      </Button>
       <Table businessId={1} refreshKey={refreshKey} />
       <TableFormModal
         open={openModal}

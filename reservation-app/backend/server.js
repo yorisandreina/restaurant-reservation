@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { checkAvailability } from "./controllers/availabilityController.js";
-import { createReservation } from "./controllers/reservationController.js";
+import { createReservation, eraseReservation } from "./controllers/reservationController.js";
 import { clientSignupController } from "./controllers/clientSignupController.js";
 import { clientLoginController } from "./controllers/clientLoginController.js";
 import { getReservations } from "./controllers/getReservationsController.js";
@@ -29,6 +29,8 @@ app.post("/set-tables", setTable);
 app.get("/time-slots", getTimeSlots);
 
 app.post("/set-time-slots", setTimeSlots);
+
+app.delete("/delete-reservation", eraseReservation);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () =>

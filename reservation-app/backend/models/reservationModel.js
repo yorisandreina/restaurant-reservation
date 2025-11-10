@@ -18,3 +18,8 @@ export const getReservationsByBusiness = async (business_id) => {
   });
   return data;
 };
+
+export const deleteReservation = async (reservation_id) => {
+  const { data } = await apiClient.delete(`/reservations/${reservation_id}`);
+  return data;
+};

@@ -75,3 +75,46 @@ export const useReservation = () => {
 
   return { reservation, loading, error, createReservation };
 };
+
+export const eraseReservation = () => {
+  const [reservation, setReservation] = useState<any | null>(null);
+  const [loadingRes, setLoadingRes] = useState(false);
+  const [errorRes, setErrorRes] = useState<string | null>(null);
+
+  const deleteReservation = async (reservationId: number) => {
+    if (!reservationId) {
+      setErrorRes("Todos los campos son obligatorios");
+      return;
+    }
+
+    try {
+      setLoadingRes(true);
+      setErrorRes(null);
+
+      const res = await fetch(
+        `/api/delete-reservation?reservations_id=${reservationId}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!res.ok) {
+        const errorBody = await res.text();
+        throw new Error(`HTTP ${res.status} ${res.statusText}: ${errorBody}`);
+      }
+      const data = await res.json();
+      setReservation(data);
+      return true;
+    } catch (err: any) {
+      console.error("Error creating reservation:", err);
+      setErrorRes(err.message || "Error desconocido");
+      setReservation(null);
+      return false;
+    } finally {
+      setLoadingRes(false);
+    }
+  };
+
+  return { reservation, loadingRes, errorRes, deleteReservation };
+};

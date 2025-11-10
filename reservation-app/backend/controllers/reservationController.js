@@ -1,4 +1,4 @@
-import { createReservationInDB } from "../models/reservationModel.js";
+import { createReservationInDB, deleteReservation } from "../models/reservationModel.js";
 
 export const createReservation = async (req, res) => {
   try {
@@ -36,6 +36,25 @@ export const createReservation = async (req, res) => {
       .json({ message: "Reserva creada exitosamente", data: newReservation });
   } catch (error) {
     console.error("Error al crear la reserva:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+export const eraseReservation = async (req, res) => {
+  try {
+    const {reservations_id} = req.query;
+
+    if (!reservations_id) {
+      return res.status(400).json({ error: "Faltan parámetros obligatorios" });
+    }
+
+    const reservationToDelete = await deleteReservation(reservations_id);
+
+    return res
+      .status(201)
+      .json({ message: "Éxito", data: reservationToDelete });
+  } catch (error) {
+    console.error("Error:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };

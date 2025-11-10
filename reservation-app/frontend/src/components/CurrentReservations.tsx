@@ -2,7 +2,9 @@ import { useGetReservations } from "@/hooks/useGetReservations";
 import React from "react";
 import { Spinner } from "./ui/spinner";
 import { Card, CardContent } from "./ui/card";
-import { SquarePen, CircleX } from "lucide-react";
+import { CircleX } from "lucide-react";
+import { eraseReservation } from "@/hooks/useReservation";
+import ConfirmationModal from "./ConfirmationModal";
 
 interface ReservationProps {
   businessId: number;
@@ -22,13 +24,10 @@ interface Reservation {
 
 const CurrentReservations: React.FC<ReservationProps> = ({ businessId }) => {
   const { loading, error, reservationData } = useGetReservations({businessId});
+  const { loadingRes, errorRes, deleteReservation } = eraseReservation();
 
-  if (loading) return (
-    <div className="flex justify-center items-center w-full h-full mt-5">
-      <Spinner className="size-8" />
-    </div>
-  );
-  if (error) return <p className="text-red-500">Error: {error}</p>;
+  const [selectedReservationId, setSelectedReservationId] = React.useState<number | null>(null);
+  const [modalOpen, setModalOpen] = React.useState(false);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("es-ES", {
@@ -37,6 +36,27 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId }) => {
       year: "numeric",
     });
   }
+
+  const handleDeleteClick = (reservationId: number) => {
+    setSelectedReservationId(reservationId);
+    setModalOpen(true);
+  };
+
+  const handleConfirmDelete = async (confirmed: boolean) => {
+    if (confirmed && selectedReservationId !== null) {
+      await deleteReservation(selectedReservationId);
+    }
+    setSelectedReservationId(null);
+  };
+
+  if (loading || loadingRes)
+    return (
+      <div className="flex justify-center items-center w-full h-full mt-5">
+        <Spinner className="size-8" />
+      </div>
+    );
+
+  if (error || errorRes) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="flex flex-col gap-4 items-center p-5">
@@ -56,6 +76,7 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId }) => {
                     size={20}
                     color="#e20404"
                     className="cursor-pointer"
+                    onClick={() => handleDeleteClick(reservation.id)}
                   />
                 </div>
               </div>
@@ -73,12 +94,19 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId }) => {
                       : "text-gray-500"
                   }
                 >
-                  {reservation.status}
+                  {reservation.status === "CONFIRMED"
+                    ? "CONFIRMADO"
+                    : "CANCELADO"}
                 </p>
               </div>
             </CardContent>
           </Card>
         ))}
+      <ConfirmationModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 

@@ -11,7 +11,7 @@ export const checkAvailability = async (req, res) => {
   }
 
   try {
-    const dow = new Date(date).getDay(); // 1=lunes, 7=domingo
+    const dow = new Date(date).getDay();
 
     const reservationSlots = await getReservationDurationByBusiness(
       business_id,
@@ -66,7 +66,11 @@ export const checkAvailability = async (req, res) => {
     const availableSlots = [];
 
     let slotStartTime = new Date(`${date}T${start_time}:00Z`).getTime();
-    const endTime = new Date(`${date}T${end_time}:00Z`).getTime();
+    let endTime = new Date(`${date}T${end_time}:00Z`).getTime();
+
+    if (end_time === "00:00" || end_time === "0:00") {
+      endTime += 24 * 60 * 60 * 1000;
+    }
 
     const madridOffsetHours = 2;
     const now = new Date();
