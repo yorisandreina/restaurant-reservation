@@ -1,7 +1,7 @@
 import { createReservationInDB, deleteReservation } from "../models/reservationModel.js";
 
 export const createReservation = async (req, res) => {
-  try {
+  try { 
     const { business_id, table_id, date, people, time, name, lastName, email, phone } =
       req.body;
 
@@ -12,8 +12,6 @@ export const createReservation = async (req, res) => {
       !people ||
       !time ||
       !name ||
-      !lastName ||
-      !email ||
       !phone
     ) {
       return res.status(400).json({ error: "Faltan parámetros obligatorios" });
