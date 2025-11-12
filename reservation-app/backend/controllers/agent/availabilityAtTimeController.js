@@ -1,6 +1,7 @@
-import { getTablesByBusiness } from "../models/tableModel.js";
-import { getReservationsByBusinessAndDate } from "../models/reservationModel.js";
-import { getReservationDurationByBusiness } from "../models/timeSlotModel.js";
+import { getTablesByBusiness } from "../../models/tableModel.js";
+import { getReservationsByBusinessAndDate } from "../../models/reservationModel.js";
+import { getReservationDurationByBusiness } from "../../models/timeSlotModel.js";
+import { verifyDateTime } from "../../helpers/verifyDateTime.js"
 
 export const checkAvailabilityAtTime = async (req, res) => {
   console.log("checkAvailabilityAtTime called with body:", req.body);
@@ -9,6 +10,13 @@ export const checkAvailabilityAtTime = async (req, res) => {
   if (!business_id || !date || !people || !time) {
     return res.status(400).json({ error: "Faltan parámetros obligatorios" });
   }
+
+  const isDateTimeValid = verifyDateTime(date, time);
+    if (!isDateTimeValid) {
+      return res.status(400).json({
+      error: "La fecha y hora deben ser iguales o posteriores al momento actual.",
+    });
+    }
 
   try {
     const dow = new Date(date).getDay();
@@ -76,8 +84,10 @@ export const checkAvailabilityAtTime = async (req, res) => {
       }
 
       while (slotStartTime + reservationDuration * 60000 <= endTime) {
+        console.log("slotStartTime", new Date(slotStartTime).toISOString().slice(11, 16), 
+            "selectedEnd", new Date(selectedEnd).toISOString().slice(11, 16));
         const slotEndTime = slotStartTime + reservationDuration * 60000;
-        if (slotStartTime <= selectedStart) {
+        if (slotStartTime <= selectedEnd) {
           slotStartTime += slotInterval * 60000;
           continue;
         }
@@ -97,6 +107,7 @@ export const checkAvailabilityAtTime = async (req, res) => {
             .slice(11, 16);
           break;
         }
+        console.log("next availability", nextAvailability)
 
         slotStartTime += slotInterval * 60000;
       }

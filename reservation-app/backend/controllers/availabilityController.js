@@ -41,7 +41,7 @@ export const checkAvailability = async (req, res) => {
       return res.status(200).json([
         {
           hora: null,
-          disponible: false,
+          disponible: false, 
           cantidad_mesas_disp: 0,
           mesas_disponibles: [],
           mesa_sugerida: null,

@@ -7,7 +7,7 @@ import { clientLoginController } from "./controllers/clientLoginController.js";
 import { getReservations } from "./controllers/getReservationsController.js";
 import { eraseTable, getTables, setTable } from "./controllers/tableController.js";
 import { getTimeSlots, setTimeSlots } from "./controllers/timeSlotController.js";
-import { checkAvailabilityAtTime } from "./controllers/availabilityAtTimeController.js";
+import { checkAvailabilityAtTime } from "./controllers/agent/availabilityAtTimeController.js";
 
 const app = express();
 app.use(cors());
