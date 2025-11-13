@@ -1,6 +1,7 @@
 import { getTablesByBusiness } from "../models/tableModel.js";
 import { getReservationsByBusinessAndDate } from "../models/reservationModel.js";
 import { getReservationDurationByBusiness } from "../models/timeSlotModel.js";
+import { DateTime } from "luxon";
 
 export const checkAvailability = async (req, res) => {
   console.log("checkAvailability called with:", req.query);
@@ -22,19 +23,15 @@ export const checkAvailability = async (req, res) => {
         .status(400)
         .json({ error: "No hay franjas definidas para este día" });
     }
-    console.log("reservation slots", reservationSlots)
 
     const { start_time, end_time, slot_min, max_duration } =
       reservationSlots[0];
 
     const reservationDuration = Number(max_duration);
-    console.log("reservation duration", reservationDuration);
 
     const slotInterval = Number(slot_min);
-    console.log("slot interval", slotInterval);
 
     const tables = await getTablesByBusiness(business_id);
-    console.log("tables", tables);
 
     const validTables = tables.filter((t) => t.max_capacity >= Number(people));
     if (!validTables.length) {
@@ -50,7 +47,6 @@ export const checkAvailability = async (req, res) => {
         },
       ]);
     }
-    console.log("valid tables", validTables);
 
     const reservations = await getReservationsByBusinessAndDate(
       business_id,
@@ -59,12 +55,10 @@ export const checkAvailability = async (req, res) => {
     const activeReservations = reservations.filter(
       (r) => r.estado !== "CANCELLED" && r.estado !== "NO_SHOW"
     );
-    console.log("reservations", reservations);
 
     const reservationsByTable = new Map();
     for (const r of activeReservations) {
       const mesaId = r.table_id;
-
       const start = new Date(`${r.date}T${r.time}:00Z`).getTime();
       const end = start + reservationDuration * 60 * 1000;
 
@@ -75,33 +69,38 @@ export const checkAvailability = async (req, res) => {
 
     const availableSlots = [];
 
-    let slotStartTime = new Date(`${date}T${start_time}:00Z`).getTime();
-    let endTime = new Date(`${date}T${end_time}:00Z`).getTime();
+    let slotStartTime = DateTime.fromISO(`${date}T${start_time}`, { zone: "Europe/Madrid" }).toMillis();
+    let endTime = DateTime.fromISO(`${date}T${end_time}`, { zone: "Europe/Madrid" }).toMillis();
 
     if (end_time === "00:00" || end_time === "0:00") {
       endTime += 24 * 60 * 60 * 1000;
     }
 
-    const madridOffsetHours = 2;
-    const now = new Date();
-    const nowTime = now.getTime() + madridOffsetHours * 60 * 60 * 1000;
-    console.log("now time", nowTime)
+    const now = DateTime.now().setZone("Europe/Madrid");
+    const nowTime = now.toMillis();
 
-    const selectedDate = new Date(date);
-    console.log("selected date", selectedDate);
+    const selectedDate = DateTime.fromISO(date, { zone: "Europe/Madrid" });
     const isToday =
-      selectedDate.getFullYear() === now.getFullYear() &&
-      selectedDate.getMonth() === now.getMonth() &&
-      selectedDate.getDate() === now.getDate();
-    console.log("is today", isToday);
+      selectedDate.year === now.year &&
+      selectedDate.month === now.month &&
+      selectedDate.day === now.day;
+
+    if (isToday) {
+      const minutesNow = now.minute;
+      const remainder = minutesNow % slotInterval;
+
+      const minutesToAdd =
+        remainder === 0 ? slotInterval : slotInterval - remainder;
+
+      const roundedNowTime = nowTime + minutesToAdd * 60000;
+
+      while (slotStartTime < roundedNowTime) {
+        slotStartTime += slotInterval * 60000;
+      }
+    }
 
     while (slotStartTime + reservationDuration * 60000 <= endTime) {
       const slotEndTime = slotStartTime + reservationDuration * 60000;
-
-      if (isToday && slotStartTime < nowTime) {
-        slotStartTime += slotInterval * 60000;
-        continue;
-      }
 
       let freeTables = [];
 
@@ -114,7 +113,9 @@ export const checkAvailability = async (req, res) => {
       }
 
       availableSlots.push({
-        hora: new Date(slotStartTime).toISOString().slice(11, 16),
+        hora: DateTime.fromMillis(slotStartTime, {
+          zone: "Europe/Madrid",
+        }).toFormat("HH:mm"),
         disponible: freeTables.length > 0,
         cantidad_mesas_disp: freeTables.length,
         mesas_disponibles: freeTables,
@@ -123,8 +124,6 @@ export const checkAvailability = async (req, res) => {
 
       slotStartTime += slotInterval * 60000;
     }
-
-    console.log("disponibilidad", availableSlots)
 
     res.json(availableSlots);
   } catch (error) {
