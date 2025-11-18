@@ -2,13 +2,12 @@ import express from "express";
 import cors from "cors";
 import { checkAvailability } from "./controllers/availabilityController.js";
 import { createReservation, eraseReservation } from "./controllers/reservationController.js";
-import { clientSignupController } from "./controllers/clientSignupController.js";
-import { clientLoginController } from "./controllers/clientLoginController.js";
 import { getReservations } from "./controllers/getReservationsController.js";
 import { eraseTable, getTables, setTable } from "./controllers/tableController.js";
 import { getTimeSlots, setTimeSlots } from "./controllers/timeSlotController.js";
 import { checkAvailabilityAtTime } from "./controllers/agent/availabilityAtTimeController.js";
 import { createReservationFromAgent } from "./controllers/agent/agentReservationController.js";
+import { clientLoginController, clientSignupController, clientValidationController } from "./controllers/clientAuthController.js";
 
 const app = express();
 app.use(cors());
@@ -21,6 +20,8 @@ app.post("/reservation", createReservation);
 app.post("/signup", clientSignupController);
 
 app.post("/login", clientLoginController);
+
+app.get("/validate-user", clientValidationController);
 
 app.get("/reservations", getReservations);
 

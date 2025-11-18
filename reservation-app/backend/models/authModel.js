@@ -1,8 +1,9 @@
+import apiClient from "../helpers/apiClient.js";
 import authApiClient from "../helpers/authApiClient.js";
 
-export const signup = async (email, password) => {
+export const signup = async (username, password) => {
   const body = {
-    email: email,
+    username: username,
     password: password,
   };
 

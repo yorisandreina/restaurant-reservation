@@ -17,20 +17,41 @@ import { useNavigate } from 'react-router-dom';
 const ClientAuthScreen = () => {
   const navigate = useNavigate();  
   const [password, setPassword] = useState("");
+  const [passwordVal, setPasswordVal] = useState("");
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+  const [isValidated, setIsValidated] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const [isSetPassword, setIsSetPassword] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const { signup, login, loading, error } = useAuth();
+  const { signup, validate, login, loading, error } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isSignup) {
-      const res = await signup(email, password);
+    if (isSignup && !isSetPassword) {
+      const res = await validate(username);
       if (!res) return;
-      
-      navigate("/client-details");
+      if (res.res === 0) {
+        setIsValidated(true);
+        setIsSetPassword(true);
+      } else {
+        setMessage(res.message);
+      }
+
+      return;
+    }
+
+    if (isSetPassword && isSignup) {
+      if (password !== passwordVal) {
+        setMessage("Las contraseñas deben ser iguales.");
+        return;
+      }
+
+      const res = await signup(username, password);
+      if (!res) return;
+
+      navigate("/client-home");
       return;
     }
     
@@ -44,79 +65,103 @@ const ClientAuthScreen = () => {
     <div className="flex items-center justify-center p-4">
       <Card className="w-full max-w-sm text-left">
         <CardHeader>
-          <CardTitle className="text-xl">¡Bienvenido!</CardTitle>
+          <CardTitle className="text-xl">
+            {isSignup ? "Validar mi cuenta" : "¡Bienvenido de vuelta!"}
+          </CardTitle>
           <CardDescription>
             {isSignup
-              ? "Ingresa tu email y contraseña para crear una cuenta."
+              ? "Ingresa tu usuario validar la cuenta."
               : "Ingresa tu usuario y contraseña para acceder a tu cuenta."}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form>
             <div className="flex flex-col gap-6">
-              {isSignup ? (
-                ""
-              ) : (
+              {!isSignup && (
                 <div className="grid gap-2">
-                  <Label htmlFor="username">Usuario</Label>
+                  <Label htmlFor="email">Usuario</Label>
                   <Input
-                    id="username"
-                    type="username"
                     value={username}
-                    placeholder="0x-xxx"
                     onChange={(e) => setUsername(e.target.value)}
-                    required
                   />
                 </div>
               )}
-              {isSignup ? (
+              {isSignup && (
+                <>
+                  <div className="grid gap-2">
+                    <Label>Usuario</Label>
+                    <Input
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                  </div>
+                  {isValidated && (
+                    <div>
+                      <div className="grid gap-2">
+                        <Label>Contraseña</Label>
+                        <Input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="grid gap-2 mt-5">
+                        <Label>Repetir Contraseña</Label>
+                        <Input
+                          type="password"
+                          value={passwordVal}
+                          onChange={(e) => setPasswordVal(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+              {!isSignup && (
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label>Contraseña</Label>
                   <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    placeholder="m@example.com"
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-              ) : (
-                ""
               )}
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Contraseña</Label>
-                  {/* <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Olvidé mi contraseña
-                  </a> */}
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full" onClick={handleSubmit}>
-            {loading ? <Spinner className="size-5" /> : "Acceder"}
-          </Button>
-          {!isSignup ? <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => setIsSignup(true)}
-          >
-            {loading ? <Spinner className="size-5" /> : "Crear una cuenta"}
-          </Button> : ""}
-          {error && <p className="text-red-500">{error}</p>}
+          {isSignup ? (
+            <Button type="submit" className="w-full" onClick={handleSubmit}>
+              {loading ? <Spinner className="size-5" /> : "Validar"}
+            </Button>
+          ) : (
+            <Button type="submit" className="w-full" onClick={handleSubmit}>
+              {loading ? <Spinner className="size-5" /> : "Acceder"}
+            </Button>
+          )}
+          {!isSignup ? (
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setIsSignup(true)}
+            >
+              Validar mi usuario
+            </Button>
+          ) : (
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={() => setIsSignup(false)}
+            >
+              Ya tengo cuenta
+            </Button>
+          )}
+          <div>
+            {error && <p className="text-red-500">{error}</p>}
+            {message && <p className="text-red-500">{message}</p>}
+          </div>
         </CardFooter>
       </Card>
     </div>
