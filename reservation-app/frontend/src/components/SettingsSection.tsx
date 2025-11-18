@@ -3,7 +3,7 @@ import {
   Card,
   CardContent,
 } from "./ui/card";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, LogIn } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 
 const SettingsSection: React.FC = () => {
@@ -22,7 +22,7 @@ const SettingsSection: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-      <Card 
+      <Card
         className="w-full max-w-sm text-left py-4 cursor-pointer"
         onClick={() => navigate("/time-slots")}
       >
@@ -30,6 +30,17 @@ const SettingsSection: React.FC = () => {
           <div className="flex flex-row justify-between items-center mb-1">
             <p>Horario</p>
             <ChevronRight size={20} color="#5b5b5b" />
+          </div>
+        </CardContent>
+      </Card>
+      <Card
+        className="w-full max-w-sm text-left py-4 cursor-pointer"
+        onClick={() => navigate("/client-auth")}
+      >
+        <CardContent>
+          <div className="flex flex-row justify-between items-center mb-1">
+            <p>Salir</p>
+            <LogIn size={20} color="#e20404" />
           </div>
         </CardContent>
       </Card>

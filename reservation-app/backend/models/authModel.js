@@ -20,3 +20,12 @@ export const login = async (username, password) => {
   const { data } = await authApiClient.post("/auth/login", body);
   return data;
 };
+
+export const getUser = async (token) => {
+  const { data } = await authApiClient.get("/auth/me", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return data;
+};

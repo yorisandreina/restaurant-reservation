@@ -14,6 +14,8 @@ const TimeSlotsScreen = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [hasSlots, setHasSlots] = useState(false);
 
+  const businessId = Number(localStorage.getItem("businessId"));
+
   const { postTimeSlots, loading, error, message } = createTimeSlots();
 
   const handleSubmit = async (
@@ -28,7 +30,7 @@ const TimeSlotsScreen = () => {
   ) => {
     await postTimeSlots(
       formData.map((day) => ({
-        businessId: 1,
+        businessId: businessId,
         dow: day.dow,
         closed: day.closed,
         startTime: day.startTime,
@@ -74,7 +76,7 @@ const TimeSlotsScreen = () => {
         </Alert>
       )}
       <TimeSlots
-        businessId={1}
+        businessId={businessId}
         refreshKey={refreshKey}
         onSlotsStatusChange={setHasSlots}
       />

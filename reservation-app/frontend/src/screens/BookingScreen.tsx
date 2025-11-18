@@ -19,6 +19,8 @@ const BookingScreen: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
+  const businessId = Number(localStorage.getItem("businessId"));
+
   const { loading, error, createReservation } = useReservation();
 
   const handleOpenModal = () => {
@@ -43,7 +45,7 @@ const BookingScreen: React.FC = () => {
       date,
       people,
       time: selectedTimeSlot,
-      businessId: 1,
+      businessId: businessId,
       tableId: tableId,
     });
 
@@ -63,11 +65,6 @@ const BookingScreen: React.FC = () => {
       });
     }
   };
-
-  const navigateToAuth = () => {
-    navigate("/client-auth")
-  }
-
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">

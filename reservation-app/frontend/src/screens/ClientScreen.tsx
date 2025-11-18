@@ -8,6 +8,8 @@ const ClientScreen: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState("reservations");
   const [refreshKey, setRefreshKey] = useState(0);
 
+  const businessId = Number(localStorage.getItem("businessId"));
+
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">
       <div className="flex flex-wrap item-center justify-between pt-4 gap-4">
@@ -16,14 +18,14 @@ const ClientScreen: React.FC = () => {
       {selectedOption === "reservations" ? (
         <div className="w-full items-center">
           <CurrentReservations
-            businessId={1}
+            businessId={businessId}
             refreshKey={refreshKey}
             onRefresh={() => setRefreshKey((prev) => prev + 1)}
           />
         </div>
       ) : selectedOption === "new" ? (
         <div className="w-full items-center mt-4">
-          <BookingSection businessId={0} />
+          <BookingSection businessId={businessId} />
         </div>
       ) : (
         <div className="w-full items-center">

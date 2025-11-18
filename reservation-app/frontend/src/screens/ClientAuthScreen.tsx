@@ -15,7 +15,7 @@ import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
 const ClientAuthScreen = () => {
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [passwordVal, setPasswordVal] = useState("");
   const [username, setUsername] = useState("");
@@ -24,7 +24,7 @@ const ClientAuthScreen = () => {
   const [isSetPassword, setIsSetPassword] = useState(false);
   const [message, setMessage] = useState("");
 
-  const { signup, validate, login, loading, error } = useAuth();
+  const { signup, validate, login, getCurrentUser, loading, error } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,6 +57,8 @@ const ClientAuthScreen = () => {
     
     const res = await login(username, password);
     if (!res) return;
+
+    await getCurrentUser();
 
     navigate("/client-home")
   }

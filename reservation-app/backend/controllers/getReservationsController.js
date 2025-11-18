@@ -9,7 +9,6 @@ export const getReservations = async (req, res) => {
     }
 
     const reservations = await getReservationsByBusiness(business_id);
-    console.log(reservations)
 
     return res
       .status(201)

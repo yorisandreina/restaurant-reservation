@@ -14,7 +14,6 @@ interface ReservationProps {
 }
 
 const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
-  const navigate = useNavigate();
   const [people, setPeople] = useState(2);
   const [date, setDate] = useState("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
@@ -47,7 +46,7 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
       date,
       people,
       time: selectedTimeSlot,
-      businessId: 1,
+      businessId: businessId,
       tableId: tableId,
     });
 
@@ -74,7 +73,7 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
       <div className="flex items-center w-full max-w-sm border-t border-gray-300"></div>
       <div className="py-6">
         <AvailableTimeSlots
-          businessId={1}
+          businessId={businessId}
           date={date}
           people={people}
           value={selectedTimeSlot}

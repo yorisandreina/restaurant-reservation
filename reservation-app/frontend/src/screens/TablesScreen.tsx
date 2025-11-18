@@ -11,6 +11,8 @@ const TablesScreen = () => {
   const [openModal, setOpenModal] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  const businessId = Number(localStorage.getItem("businessId"));
+
   const { postTable, loading, error } = createTable();
 
   const handleSubmit = async (formData: {
@@ -20,7 +22,7 @@ const TablesScreen = () => {
     active: boolean;
   }) => {
     const tableCreated = await postTable({
-        businessId: 1,
+        businessId: businessId,
         name: formData.name,
         minCapacity: formData.minCapacity,
         maxCapacity: formData.maxCapacity,
@@ -47,7 +49,7 @@ const TablesScreen = () => {
         Agregar mesa
       </Button>
       <Table
-        businessId={1}
+        businessId={businessId}
         refreshKey={refreshKey}
         onRefresh={() => setRefreshKey((prev) => prev + 1)}
       />

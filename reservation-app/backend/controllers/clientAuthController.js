@@ -1,4 +1,4 @@
-import { login, signup } from "../models/authModel.js";
+import { getUser, login, signup } from "../models/authModel.js";
 import { validate } from "../models/userModel.js";
 
 export const clientLoginController = async (req, res) => {
@@ -12,6 +12,7 @@ export const clientLoginController = async (req, res) => {
     }
 
     const logUser = await login(username, password);
+    console.log("logged user", logUser)
 
     return res.status(201).json({ message: "Éxito", data: logUser });
   } catch (error) {
@@ -62,5 +63,24 @@ export const clientValidationController = async (req, res) => {
   } catch (error) {
     console.error("Error al validar usuario:", error);
     return res.status(500).json({ error: error.res.data.message });
+  }
+};
+
+export const getUserController = async (req, res) => {
+  try {
+    const token = req.headers.authorization;
+    console.log(token)
+
+    if (!token) {
+      return res.status(401).json({ error: "Token no proporcionado" });
+    }
+
+    const user = await getUser(token);
+    console.log("fetched user", user);
+
+    return res.status(201).json({ message: "Éxito", data: user });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
   }
 };

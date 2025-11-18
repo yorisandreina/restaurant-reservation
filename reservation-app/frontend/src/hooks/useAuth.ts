@@ -9,7 +9,7 @@ interface AuthResponse {
 interface ValidationResponse {
   res: number;
   message: string;
-  data?: any;
+  data: any;
 }
 
 export const useAuth = () => {
@@ -89,7 +89,13 @@ export const useAuth = () => {
         throw new Error(errText || "Error al iniciar sesión");
       }
 
-      return await res.json();
+      const data = await res.json();
+
+      if (data.data?.authToken) {
+        localStorage.setItem("authToken", data.data?.authToken);
+      }
+
+      return data;
     } catch (err: any) {
       setError(err.message);
       return null;
@@ -98,5 +104,40 @@ export const useAuth = () => {
     }
   };
 
-  return { validate, signup, login, loading, error };
+  const getCurrentUser = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        throw new Error("No hay token guardado");
+      }
+
+      const res = await fetch("/api/get-user", {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || "Error al obtener usuario");
+      }
+
+      const data = await res.json();
+
+      localStorage.setItem("businessId", JSON.stringify(data?.data?.id));
+
+      return data.data;
+    } catch (err: any) {
+      setError(err.message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { validate, signup, login, getCurrentUser, loading, error };
 };

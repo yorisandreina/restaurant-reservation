@@ -7,7 +7,7 @@ import { eraseTable, getTables, setTable } from "./controllers/tableController.j
 import { getTimeSlots, setTimeSlots } from "./controllers/timeSlotController.js";
 import { checkAvailabilityAtTime } from "./controllers/agent/availabilityAtTimeController.js";
 import { createReservationFromAgent } from "./controllers/agent/agentReservationController.js";
-import { clientLoginController, clientSignupController, clientValidationController } from "./controllers/clientAuthController.js";
+import { clientLoginController, clientSignupController, clientValidationController, getUserController } from "./controllers/clientAuthController.js";
 
 const app = express();
 app.use(cors());
@@ -22,6 +22,8 @@ app.post("/signup", clientSignupController);
 app.post("/login", clientLoginController);
 
 app.get("/validate-user", clientValidationController);
+
+app.get("/get-user", getUserController);
 
 app.get("/reservations", getReservations);
 
