@@ -12,9 +12,12 @@ export const createReservationInDB = async (reservationData) => {
   return data;
 };
 
-export const getReservationsByBusiness = async (business_id) => {
+export const getReservationsByBusiness = async (business_id, date) => {
   const { data } = await apiClient.get("/reservations", {
-    params: { business_id },
+    params: {
+      business_id,
+      date_gte: date,
+    },
   });
   return data;
 };

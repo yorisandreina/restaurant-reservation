@@ -9,6 +9,11 @@ import { useNavigate } from 'react-router-dom';
 const SettingsSection: React.FC = () => {
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    localStorage.removeItem("businessId");
+    navigate("/client-auth");
+  };
+
   return (
     <div className="flex flex-col gap-4 items-center p-5">
       <Card
@@ -35,7 +40,7 @@ const SettingsSection: React.FC = () => {
       </Card>
       <Card
         className="w-full max-w-sm text-left py-4 cursor-pointer"
-        onClick={() => navigate("/client-auth")}
+        onClick={handleLogout}
       >
         <CardContent>
           <div className="flex flex-row justify-between items-center mb-1">

@@ -5,6 +5,7 @@ import { Trash2, Users } from "lucide-react";
 import { eraseTable, getTables } from "@/hooks/useTables";
 import { Badge } from "./ui/badge";
 import ConfirmationModal from "./ConfirmationModal";
+import EmptyState from "./EmptyState";
 
 interface TableProps {
   businessId: number;
@@ -50,7 +51,19 @@ const Table: React.FC<TableProps> = ({ businessId, refreshKey, onRefresh }) => {
         <Spinner className="size-8" />
       </div>
     );
+
   if (error || errorTab) return <p className="text-red-500">Error: {error}</p>;
+
+  if (!data?.data || data?.data.length === 0)
+    return (
+      <div className="py-10">
+        <EmptyState
+          iconName="Grid2x2X"
+          header="No hay mesas"
+          description="Aún no hay mesas registradas."
+        />
+      </div>
+    );
 
   return (
     <div className="flex flex-col w-full gap-4 items-center p-2">

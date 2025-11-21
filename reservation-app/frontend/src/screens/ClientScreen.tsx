@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OptionSection from "@/components/OptionSection";
 import CurrentReservations from "@/components/CurrentReservations";
 import BookingSection from "@/components/BookingSection";
 import SettingsSection from "@/components/SettingsSection";
+import { useNavigate } from "react-router-dom";
 
 const ClientScreen: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState("reservations");
   const [refreshKey, setRefreshKey] = useState(0);
 
   const businessId = Number(localStorage.getItem("businessId"));
+  console.log("businessId desde ClientScreen:", businessId);
+
+  useEffect(() => {
+    if (!businessId) {
+      navigate("/client-auth", { replace: true });
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">

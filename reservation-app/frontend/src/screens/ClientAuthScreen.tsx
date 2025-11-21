@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "@/hooks/useAuth";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
 const ClientAuthScreen = () => {
@@ -25,6 +25,10 @@ const ClientAuthScreen = () => {
   const [message, setMessage] = useState("");
 
   const { signup, validate, login, getCurrentUser, loading, error } = useAuth();
+
+  useEffect(() => {
+    localStorage.removeItem("businessId");
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +54,8 @@ const ClientAuthScreen = () => {
 
       const res = await signup(username, password);
       if (!res) return;
+
+      await getCurrentUser();
 
       navigate("/client-home");
       return;

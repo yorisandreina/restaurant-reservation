@@ -1,11 +1,10 @@
 import React from "react";
 import { Spinner } from "./ui/spinner";
 import { Card, CardContent } from "./ui/card";
-import { Info, Trash2, Users } from "lucide-react";
-import { getTables } from "@/hooks/useTables";
-import { Badge } from "./ui/badge";
+import { Info } from "lucide-react";
 import { getTimeSlots } from "@/hooks/useTimeSlots";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
+import EmptyState from "./EmptyState";
 
 interface TimeSlotProps {
   businessId: number;
@@ -23,7 +22,7 @@ interface TimeSlot {
 }
 
 const TimeSlots: React.FC<TimeSlotProps> = ({ businessId, refreshKey, onSlotsStatusChange }) => {
-  const { loading, error, slots } = getTimeSlots({businessId});
+  const { loading, error, slots } = getTimeSlots({businessId, refreshKey});
 
   React.useEffect(() => {
     if (onSlotsStatusChange) {
@@ -51,7 +50,19 @@ const TimeSlots: React.FC<TimeSlotProps> = ({ businessId, refreshKey, onSlotsSta
         <Spinner className="size-8" />
       </div>
     );
+
   if (error) return <p className="text-red-500">Error: {error}</p>;
+
+    if (!slots?.data || slots?.data.length === 0)
+      return (
+        <div className="py-10">
+          <EmptyState
+            iconName="ClockAlert"
+            header="No hay horarios"
+            description="Aún no hay horarios registrados."
+          />
+        </div>
+      );
 
   return (
     <div className="flex flex-col w-full gap-4 items-center p-2">

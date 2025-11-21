@@ -9,7 +9,7 @@ const SuccessScreen = () => {
 
   return (
     <div className="p-4 text-center">
-      <ArrowLeft onClick={() => navigate("/")} className="cursor-pointer" />
+      <ArrowLeft onClick={() => navigate(`/r/${reservation.slug}`)} className="cursor-pointer" />
       <div className="flex items-center justify-center">
         <CircleCheck size={75} color="#01E107" />
       </div>

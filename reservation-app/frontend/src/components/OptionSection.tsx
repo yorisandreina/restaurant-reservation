@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "./ui/button";
-import { BookOpenCheck, FolderCog, CalendarPlus } from "lucide-react";
+import { FolderCog, CalendarPlus, CalendarCheck2 } from "lucide-react";
 
 interface Props {
   value: string;
@@ -15,7 +15,7 @@ const OptionSection: React.FC<Props> = ({ value, onChange }) => (
       size="sm"
       onClick={() => onChange("reservations")}
     >
-      <BookOpenCheck /> Reservaciones
+      <CalendarCheck2 /> Reservas
     </Button>
 
     <Button

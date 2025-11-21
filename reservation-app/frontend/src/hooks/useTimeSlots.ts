@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 interface Params {
   businessId: number;
+  refreshKey: number;
 }
 
 interface TimeSlot {
@@ -49,7 +50,7 @@ export const getTimeSlots = (params: Params) => {
     };
 
     fetchSlots();
-  }, [params.businessId]);
+  }, [params.businessId, params.refreshKey]);
 
   return { slots, loading, error };
 };

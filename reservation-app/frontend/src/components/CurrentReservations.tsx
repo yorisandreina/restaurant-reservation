@@ -5,6 +5,7 @@ import { Card, CardContent } from "./ui/card";
 import { CircleX } from "lucide-react";
 import { eraseReservation } from "@/hooks/useReservation";
 import ConfirmationModal from "./ConfirmationModal";
+import EmptyState from "./EmptyState";
 
 interface ReservationProps {
   businessId: number;
@@ -61,6 +62,17 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
     );
 
   if (error || errorRes) return <p className="text-red-500">Error: {error}</p>;
+
+  if (!reservationData?.data || reservationData?.data.length === 0)
+    return (
+      <div className="py-10">
+        <EmptyState
+          iconName="CalendarClock"
+          header="No hay reservas"
+          description="Aún no hay reservas registradas."
+        />
+      </div>
+    );
 
   return (
     <div className="flex flex-col gap-4 items-center p-5">

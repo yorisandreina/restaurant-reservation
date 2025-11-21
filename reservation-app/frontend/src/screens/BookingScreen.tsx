@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import PeoplePicker from "../components/PeoplePicker";
 import DatePicker from "../components/DatePicker";
@@ -9,6 +9,7 @@ import BookingDetailsModal from "@/components/BookingDetailsModal";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { useReservation } from "@/hooks/useReservation";
 import { Spinner } from "@/components/ui/spinner";
+import { useBusiness } from "@/hooks/useBusiness";
 
 const BookingScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -19,9 +20,9 @@ const BookingScreen: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
-  const businessId = Number(localStorage.getItem("businessId"));
-
   const { loading, error, createReservation } = useReservation();
+  const { slug } = useParams<{ slug: string }>();
+  const { business, loadingBusiness, errorBusiness } = useBusiness(slug);
 
   const handleOpenModal = () => {
     if (!date || !selectedTimeSlot) {
@@ -45,7 +46,7 @@ const BookingScreen: React.FC = () => {
       date,
       people,
       time: selectedTimeSlot,
-      businessId: businessId,
+      businessId: business.id,
       tableId: tableId,
     });
 
@@ -60,15 +61,25 @@ const BookingScreen: React.FC = () => {
             time: selectedTimeSlot,
             people,
             phone: formData.phone,
+            slug: business.slug,
           },
         },
       });
     }
   };
 
+  if (loadingBusiness || business === undefined) return (
+    <div className="flex justify-center items-center w-full h-full mt-5">
+      <Spinner className="size-8" />
+    </div>
+  );
+  if (errorBusiness) return <p>Error: {error}</p>;
+  if (!business)
+    return <p>Restaurante no encontrado.</p>;
+
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">
-      <Header name="El Rincón de la Tortilla" />
+      <Header name={business.name} />
       <div className="flex flex-wrap item-center justify-between pt-4 pb-5 gap-4">
         <PeoplePicker value={people} onChange={setPeople} />
         <DatePicker value={date} onChange={setDate} />
@@ -76,7 +87,7 @@ const BookingScreen: React.FC = () => {
       <div className="flex items-center w-full max-w-sm border-t border-gray-300"></div>
       <div className="py-6">
         <AvailableTimeSlots
-          businessId={1}
+          businessId={business.id}
           date={date}
           people={people}
           value={selectedTimeSlot}

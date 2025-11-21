@@ -8,6 +8,7 @@ import { getTimeSlots, setTimeSlots } from "./controllers/timeSlotController.js"
 import { checkAvailabilityAtTime } from "./controllers/agent/availabilityAtTimeController.js";
 import { createReservationFromAgent } from "./controllers/agent/agentReservationController.js";
 import { clientLoginController, clientSignupController, clientValidationController, getUserController } from "./controllers/clientAuthController.js";
+import { getBusinessBySlug } from "./controllers/businessController.js";
 
 const app = express();
 app.use(cors());
@@ -42,6 +43,8 @@ app.delete("/delete-table", eraseTable);
 app.get("/check-availability-time", checkAvailabilityAtTime);
 
 app.get("/create-reservation-agent", createReservationFromAgent);
+
+app.get("/businesses", getBusinessBySlug);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () =>
