@@ -16,6 +16,8 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const baseUrl = import.meta.env.REACT_APP_BACKEND_URL;
+
   const signup = async (
     username: string,
     password: string
@@ -114,12 +116,15 @@ export const useAuth = () => {
         throw new Error("No hay token guardado");
       }
 
-      const res = await fetch("/api/get-user", {
-        method: "GET",
-        headers: {
-          Authorization: token,
-        },
-      });
+      const res = await fetch(
+        `${baseUrl}/api/get-user`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
 
       if (!res.ok) {
         const errText = await res.text();
