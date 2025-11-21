@@ -1,4 +1,3 @@
-// src/components/BookingDetailsModal.tsx
 import * as React from "react";
 import {
   Dialog,
@@ -11,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
-import { Spinner } from "./ui/spinner";
 
 interface TimeSlotFormModalProps {
   open: boolean;
@@ -34,8 +32,8 @@ interface TimeSlotFormModalProps {
 interface DaySlot {
   dow: number;
   closed: boolean;
-  startTime: string; // "HH:mm"
-  endTime: string; // "HH:mm"
+  startTime: string;
+  endTime: string;
   slotMin: number;
   maxDuration: number;
 }
