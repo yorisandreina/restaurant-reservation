@@ -1,3 +1,4 @@
+import { apiClient } from "@/lib/apiClient";
 import { useEffect, useState } from "react";
 
 export const useAvailability = (
@@ -20,12 +21,12 @@ export const useAvailability = (
           date,
           people: people.toString(),
         });
-        const res = await fetch(`/api/availability?${params.toString()}`);
-        if (!res.ok) {
-          const errorBody = await res.text();
-          throw new Error(`HTTP ${res.status} ${res.statusText}: ${errorBody}`);
-        }
-        const data: any = await res.json();
+
+        const data = await apiClient(`/availability?${params.toString()}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+
         setAvailability(data);
         setError(null);
       } catch (err: any) {

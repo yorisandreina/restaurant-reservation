@@ -66,6 +66,9 @@ const ClientAuthScreen = () => {
 
     await getCurrentUser();
 
+    console.log("Login response:", res);
+    console.log("businessId:", localStorage.getItem("businessId"));
+
     navigate("/client-home")
   }
 

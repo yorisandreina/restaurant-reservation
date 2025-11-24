@@ -1,3 +1,4 @@
+import { apiClient } from "@/lib/apiClient";
 import { useState, useEffect } from "react";
 
 interface Params {
@@ -21,17 +22,11 @@ export const useGetReservations = (params: Params) => {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`/api/reservations?business_id=${params.businessId}`, {
+        const data = await apiClient(`/reservations?business_id=${params.businessId}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
 
-        if (!res.ok) {
-          const errorBody = await res.text();
-          throw new Error(`HTTP ${res.status} ${res.statusText}: ${errorBody}`);
-        }
-
-        const data = await res.json();
         setReservationData(data);
       } catch (err: any) {
         console.error("Error fetching reservations:", err);

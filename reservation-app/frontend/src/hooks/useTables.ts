@@ -1,3 +1,4 @@
+import { apiClient } from "@/lib/apiClient";
 import { useState, useEffect } from "react";
 
 interface Params {
@@ -29,20 +30,14 @@ export const getTables = (params: Params) => {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(
-          `/api/tables?business_id=${params.businessId}`,
+        const data = await apiClient(
+          `/tables?business_id=${params.businessId}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
           }
         );
 
-        if (!res.ok) {
-          const errorBody = await res.text();
-          throw new Error(`HTTP ${res.status} ${res.statusText}: ${errorBody}`);
-        }
-
-        const data = await res.json();
         setData(data);
       } catch (err: any) {
         console.error("Error fetching tables:", err);
@@ -68,7 +63,7 @@ export const createTable = () => {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(`/api/set-tables`, {
+      const data = await apiClient(`/set-tables`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -80,12 +75,6 @@ export const createTable = () => {
         }),
       });
 
-      if (!res.ok) {
-        const errorBody = await res.text();
-        throw new Error(`HTTP ${res.status} ${res.statusText}: ${errorBody}`);
-      }
-
-      const data = await res.json();
       return data;
     } catch (err: any) {
       setError(err.message);
@@ -113,19 +102,14 @@ export const eraseTable = () => {
       setLoadingTab(true);
       setErrorTab(null);
 
-      const res = await fetch(
-        `/api/delete-table?tables_id=${tableId}`,
+      const data = await apiClient(
+        `/delete-table?tables_id=${tableId}`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
         }
       );
 
-      if (!res.ok) {
-        const errorBody = await res.text();
-        throw new Error(`HTTP ${res.status} ${res.statusText}: ${errorBody}`);
-      }
-      const data = await res.json();
       setReservation(data);
       return true;
     } catch (err: any) {

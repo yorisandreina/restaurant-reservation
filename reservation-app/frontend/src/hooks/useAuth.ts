@@ -1,3 +1,4 @@
+import { apiClient } from "@/lib/apiClient";
 import { useState } from "react";
 
 interface AuthResponse {
@@ -26,18 +27,13 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
 
-      const res = await fetch("/api/signup", {
+      const data = await apiClient("/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || "Error al crear la cuenta");
-      }
-
-      return await res.json();
+      return await data;
     } catch (err: any) {
       setError(err.message);
       return null;
@@ -53,17 +49,12 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(`/api/validate-user?username=${username}`, {
+      const data = await apiClient(`/validate-user?username=${username}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || "Error al validar la cuenta");
-      }
-
-      return await res.json();
+      return await data;
     } catch (err: any) {
       setError(err.message);
       return null;
@@ -80,18 +71,11 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
 
-      const res = await fetch("/api/login", {
+      const data = await apiClient("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || "Error al iniciar sesión");
-      }
-
-      const data = await res.json();
 
       if (data.data?.authToken) {
         localStorage.setItem("authToken", data.data?.authToken);
@@ -107,6 +91,7 @@ export const useAuth = () => {
   };
 
   const getCurrentUser = async () => {
+    console.log("current user called")
     try {
       setLoading(true);
       setError(null);
@@ -115,9 +100,9 @@ export const useAuth = () => {
       if (!token) {
         throw new Error("No hay token guardado");
       }
+      console.log("token recibido en current user", token)
 
-      const res = await fetch(
-        `${baseUrl}/api/get-user`,
+      const data = await apiClient("/get-user",
         {
           method: "GET",
           headers: {
@@ -125,19 +110,14 @@ export const useAuth = () => {
           },
         }
       );
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || "Error al obtener usuario");
-      }
-
-      const data = await res.json();
+      console.log("get current user data", data)
 
       localStorage.setItem("businessId", JSON.stringify(data?.data?.id));
 
       return data.data;
     } catch (err: any) {
       setError(err.message);
+      console.log(err.message)
       return null;
     } finally {
       setLoading(false);

@@ -1,3 +1,4 @@
+import { apiClient } from "@/lib/apiClient";
 import { useState, useEffect } from "react";
 
 export const useBusiness = (slug: string | undefined) => {
@@ -12,8 +13,9 @@ export const useBusiness = (slug: string | undefined) => {
       try {
         setLoadingBusiness(true);
 
-        const res = await fetch(`/api/businesses?slug=${slug}`, {
+        const res = await apiClient(`/businesses?slug=${slug}`, {
           method: "GET",
+          headers: { "Content-Type": "application/json" },
         });
         if (!res.ok) throw new Error("No se pudo obtener el negocio");
 

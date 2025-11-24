@@ -1,3 +1,4 @@
+import { apiClient } from "@/lib/apiClient";
 import { useEffect, useState } from "react";
 
 interface Params {
@@ -30,15 +31,14 @@ export const getTimeSlots = (params: Params) => {
       try {
         setLoading(true);
 
-        const res = await fetch(
-          `/api/time-slots?business_id=${params.businessId}`,
+        const data = await apiClient(
+          `/time-slots?business_id=${params.businessId}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
           }
         );
 
-        const data = await res.json();
         setSlots(data);
         setError(null);
       } catch (err: any) {
@@ -66,7 +66,7 @@ export const createTimeSlots = () => {
       setError(null);
       setMessage(null);
 
-      const res = await fetch("/api/set-time-slots", {
+      const data = await apiClient("/set-time-slots", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
@@ -82,11 +82,6 @@ export const createTimeSlots = () => {
         ),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Error al guardar horario");
-      }
 
       if (data?.message) {
         setMessage(data.message);

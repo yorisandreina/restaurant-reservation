@@ -1,3 +1,4 @@
+import { apiClient } from "@/lib/apiClient";
 import { useState } from "react";
 
 interface ReservationParams {
@@ -40,7 +41,7 @@ export const useReservation = () => {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(`/api/reservation`, {
+      const data = await apiClient(`/reservation`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -56,11 +57,6 @@ export const useReservation = () => {
         }),
       });
 
-      if (!res.ok) {
-        const errorBody = await res.text();
-        throw new Error(`HTTP ${res.status} ${res.statusText}: ${errorBody}`);
-      }
-      const data = await res.json();
       setReservation(data);
       return true;
     } catch (err: any) {
@@ -91,19 +87,14 @@ export const eraseReservation = () => {
       setLoadingRes(true);
       setErrorRes(null);
 
-      const res = await fetch(
-        `/api/delete-reservation?reservations_id=${reservationId}`,
+      const data = await apiClient(
+        `/delete-reservation?reservations_id=${reservationId}`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
         }
       );
 
-      if (!res.ok) {
-        const errorBody = await res.text();
-        throw new Error(`HTTP ${res.status} ${res.statusText}: ${errorBody}`);
-      }
-      const data = await res.json();
       setReservation(data);
       return true;
     } catch (err: any) {
