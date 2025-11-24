@@ -57,8 +57,10 @@ const TimeSlotsScreen = () => {
         <ArrowLeft onClick={() => navigate(-1)} className="cursor-pointer" />
         <h1 className="text-2xl font-semibold">Horario</h1>
       </div>
-      <p className="text-left w-sm mb-2 text-gray-400">Pasa el cursor sobre el ícono para ver más información.</p>
-      {!hasSlots && loading && (
+      {hasSlots && !loading && (
+        <p className="text-left w-sm mb-2 text-gray-400">Pasa el cursor sobre el ícono para ver más información.</p>
+      )}
+      {!hasSlots && !loading && (
         <Button
           variant={"outline"}
           className="w-sm mb-4"
