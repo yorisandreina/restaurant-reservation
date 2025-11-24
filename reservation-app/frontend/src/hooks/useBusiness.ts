@@ -13,13 +13,11 @@ export const useBusiness = (slug: string | undefined) => {
       try {
         setLoadingBusiness(true);
 
-        const res = await apiClient(`/businesses?slug=${slug}`, {
+        const data = await apiClient(`/businesses?slug=${slug}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
-        if (!res.ok) throw new Error("No se pudo obtener el negocio");
 
-        const data = await res.json();
         setBusiness(data);
       } catch (err: any) {
         setErrorBusiness(err.message);
