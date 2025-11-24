@@ -17,8 +17,6 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const baseUrl = import.meta.env.REACT_APP_BACKEND_URL;
-
   const signup = async (
     username: string,
     password: string
