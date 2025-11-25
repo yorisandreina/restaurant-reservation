@@ -4,7 +4,6 @@ import { getReservationDurationByBusiness } from "../models/timeSlotModel.js";
 import { DateTime } from "luxon";
 
 export const checkAvailability = async (req, res) => {
-  console.log("checkAvailability called with:", req.query);
   const { business_id, date, people } = req.query;
 
   if (!business_id || !date || !people) {
@@ -59,13 +58,14 @@ export const checkAvailability = async (req, res) => {
     const reservationsByTable = new Map();
     for (const r of activeReservations) {
       const mesaId = r.table_id;
-      const start = new Date(`${r.date}T${r.time}:00Z`).getTime();
+      const start = DateTime.fromISO(`${r.date}T${r.time}`, {
+        zone: "Europe/Madrid",
+      }).toMillis();
       const end = start + reservationDuration * 60 * 1000;
 
       if (!reservationsByTable.has(mesaId)) reservationsByTable.set(mesaId, []);
       reservationsByTable.get(mesaId).push({ start, end });
     }
-    console.log("reservations by table", reservationsByTable)
 
     const availableSlots = [];
 
@@ -106,9 +106,9 @@ export const checkAvailability = async (req, res) => {
 
       for (const table of validTables) {
         const tableReservations = reservationsByTable.get(table.id) || [];
-        const hasConflict = tableReservations.some(
-          (r) => !(slotEndTime <= r.start || slotStartTime >= r.end)
-        );
+        const hasConflict = tableReservations.some((r) => {
+          return slotStartTime <= r.end && slotEndTime >= r.start;
+        });
         if (!hasConflict) freeTables.push(table.id);
       }
 
