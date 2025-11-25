@@ -28,7 +28,6 @@ export const createReservationFromAgent = async (req, res) => {
       people,
       time,
       name,
-      email,
       phone,
     });
 
