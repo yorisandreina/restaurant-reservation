@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { Spinner } from "./ui/spinner";
 
@@ -79,7 +78,7 @@ const TableFormModal: React.FC<TableFormModalProps> = ({
             onChange={handleChange}
             className="focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
           />
-          <div className="flex flex-row justify-between">
+          {/* <div className="flex flex-row justify-between">
             <Label htmlFor="active">Mesa activa</Label>
             <Switch
               id="active"
@@ -88,7 +87,7 @@ const TableFormModal: React.FC<TableFormModalProps> = ({
                 setForm({ ...form, active: checked as boolean })
               }
             />
-          </div>
+          </div> */}
         </div>
         <DialogFooter className="mt-4">
           <Button variant="outline" onClick={onClose}>
