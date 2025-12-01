@@ -38,6 +38,7 @@ export const checkAvailabilityAtTime = async (req, res) => {
       reservationSlots[0];
 
     const reservationDuration = Number(max_duration);
+
     const slotInterval = Number(slot_min);
 
     const now = DateTime.now().setZone("Europe/Madrid");
@@ -93,7 +94,9 @@ export const checkAvailabilityAtTime = async (req, res) => {
     const reservationsByTable = new Map();
     for (const r of activeReservations) {
       const mesaId = r.table_id;
-      const start = new Date(`${r.date}T${r.time}:00Z`).getTime();
+      const start = DateTime.fromISO(`${r.date}T${r.time}`, {
+        zone: "Europe/Madrid",
+      }).toMillis();
       const end = start + reservationDuration * 60 * 1000;
 
       if (!reservationsByTable.has(mesaId)) reservationsByTable.set(mesaId, []);

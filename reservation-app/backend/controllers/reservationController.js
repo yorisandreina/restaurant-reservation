@@ -17,6 +17,8 @@ export const createReservation = async (req, res) => {
       return res.status(400).json({ error: "Faltan parámetros obligatorios" });
     }
 
+    const res_key = `${business_id}-${table_id}-${date}-${time}`;
+
     const newReservation = await createReservationInDB({
       business_id,
       table_id,
@@ -27,6 +29,7 @@ export const createReservation = async (req, res) => {
       lastName,
       email,
       phone,
+      res_key
     });
 
     return res

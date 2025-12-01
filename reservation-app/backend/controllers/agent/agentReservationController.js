@@ -21,6 +21,8 @@ export const createReservationFromAgent = async (req, res) => {
     const date = dt.toFormat("yyyy-MM-dd");
     const time = dt.toFormat("HH:mm");
 
+    const res_key = `${business_id}-${table_id}-${date}-${time}`;
+
     const newReservation = await createReservationInDB({
       business_id,
       table_id,
@@ -29,6 +31,7 @@ export const createReservationFromAgent = async (req, res) => {
       time,
       name,
       phone,
+      res_key
     });
 
     return res
