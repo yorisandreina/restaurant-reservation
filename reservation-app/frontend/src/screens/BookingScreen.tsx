@@ -82,7 +82,7 @@ const BookingScreen: React.FC = () => {
       <Header name={business.name} />
       <div className="flex flex-wrap item-center justify-between pt-4 pb-5 gap-4">
         <PeoplePicker value={people} onChange={setPeople} />
-        <DatePicker value={date} onChange={setDate} />
+        <DatePicker value={date} showLabel={true} onChange={setDate} />
       </div>
       <div className="flex items-center w-full max-w-sm border-t border-gray-300"></div>
       <div className="py-6">

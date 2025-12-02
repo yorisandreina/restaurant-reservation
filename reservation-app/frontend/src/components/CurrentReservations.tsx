@@ -6,6 +6,8 @@ import { CircleX } from "lucide-react";
 import { eraseReservation } from "@/hooks/useReservation";
 import ConfirmationModal from "./ConfirmationModal";
 import EmptyState from "./EmptyState";
+import ReservationFilter from "./ReservationFilter";
+import { Button } from "./ui/button";
 
 interface ReservationProps {
   businessId: number;
@@ -31,6 +33,11 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
 
   const [selectedReservationId, setSelectedReservationId] = React.useState<number | null>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
+  const [filters, setFilters] = React.useState({
+    search: "",
+    status: "",
+    date: "",
+  });
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("es-ES", {
@@ -74,9 +81,70 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
       </div>
     );
 
+  let list = reservationData?.data || [];
+
+  list = list.filter((r: any) =>
+    r.name.toLowerCase().includes(filters.search.toLowerCase())
+  );
+
+  if (filters.status && filters.status !== "TODOS") {
+    list = list.filter((r: any) => r.status === filters.status);
+  }
+
+  if (filters.date) list = list.filter((r: any) => r.date.startsWith(filters.date));
+
+  list = list.slice().sort((a: any, b: any) => {
+    return new Date(a.date).getTime() - new Date(b.date).getTime();
+  });
+
+  if (list.length === 0)
+    return (
+      <div className="flex flex-col gap-4 items-center p-5">
+        <ReservationFilter filters={filters} onChange={setFilters} />
+        <div className="w-full max-w-sm flex justify-end">
+          <Button
+            variant="link"
+            onClick={() =>
+              setFilters({
+                search: "",
+                status: "",
+                date: "",
+              })
+            }
+          >
+            Borrar filtros
+          </Button>
+        </div>
+        <div className="py-10">
+          <EmptyState
+            iconName="CalendarClock"
+            header="No hay reservas"
+            description="Aún no hay reservas con estos filtros."
+          />
+        </div>
+      </div>
+    );
+
   return (
     <div className="flex flex-col gap-4 items-center p-5">
-      {reservationData?.data
+      <div className="w-full max-w-sm border-t border-gray-300"></div>
+      <ReservationFilter filters={filters} onChange={setFilters} />
+      <div className="w-full max-w-sm flex justify-end">
+        <Button
+          variant="link"
+          onClick={() =>
+            setFilters({
+              search: "",
+              status: "",
+              date: "",
+            })
+          }
+        >
+          Borrar filtros
+        </Button>
+      </div>
+      <div className="w-full max-w-sm border-t border-gray-300"></div>
+      {list
         ?.slice()
         .sort(
           (a: Reservation, b: Reservation) =>

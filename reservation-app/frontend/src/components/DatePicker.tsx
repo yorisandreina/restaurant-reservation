@@ -10,11 +10,12 @@ import {
 import { format } from "date-fns";
 
 interface Props {
-  value: string; // formato esperado: "YYYY-MM-DD"
+  value: string;
+  showLabel?: boolean;
   onChange: (value: string) => void;
 }
 
-const DatePicker: React.FC<Props> = ({ value, onChange }) => {
+const DatePicker: React.FC<Props> = ({ value, showLabel, onChange }) => {
   const [open, setOpen] = React.useState(false);
 
   const selectedDate = value ? new Date(value) : undefined;
@@ -28,7 +29,7 @@ const DatePicker: React.FC<Props> = ({ value, onChange }) => {
 
   return (
     <div className="flex gap-2 items-center">
-      <label className="text-sm font-small text-gray-400">Fecha</label>
+      {showLabel && <label className="text-sm font-small text-gray-400">Fecha</label>}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button

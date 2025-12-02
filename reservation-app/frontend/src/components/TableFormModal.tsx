@@ -1,4 +1,3 @@
-// src/components/BookingDetailsModal.tsx
 import * as React from "react";
 import {
   Dialog,

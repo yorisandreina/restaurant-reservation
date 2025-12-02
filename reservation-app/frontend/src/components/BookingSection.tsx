@@ -67,7 +67,7 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
     <div className="min-h-screen bg-white flex flex-col items-center">
       <div className="flex flex-wrap item-center justify-between pt-4 pb-5 gap-4">
         <PeoplePicker value={people} onChange={setPeople} />
-        <DatePicker value={date} onChange={setDate} />
+        <DatePicker value={date} showLabel={true} onChange={setDate} />
       </div>
       <div className="flex items-center w-full max-w-sm border-t border-gray-300"></div>
       <div className="py-6">
