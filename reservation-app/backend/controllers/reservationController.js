@@ -32,6 +32,10 @@ export const createReservation = async (req, res) => {
       res_key
     });
 
+    if (data?.statement === "Throw Error" && data?.payload) {
+      throw new Error(data.payload);
+    }
+
     return res
       .status(201)
       .json({ message: "Reserva creada exitosamente", data: newReservation });

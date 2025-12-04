@@ -7,7 +7,6 @@ import { eraseReservation } from "@/hooks/useReservation";
 import ConfirmationModal from "./ConfirmationModal";
 import EmptyState from "./EmptyState";
 import ReservationFilter from "./ReservationFilter";
-import { Button } from "./ui/button";
 
 interface ReservationProps {
   businessId: number;
@@ -28,10 +27,15 @@ interface Reservation {
 }
 
 const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKey, onRefresh }) => {
-  const { loading, error, reservationData } = useGetReservations({businessId, refreshKey});
+  const { loading, error, reservationData } = useGetReservations({
+    businessId,
+    refreshKey,
+  });
   const { loadingRes, errorRes, deleteReservation } = eraseReservation();
 
-  const [selectedReservationId, setSelectedReservationId] = React.useState<number | null>(null);
+  const [selectedReservationId, setSelectedReservationId] = React.useState<
+    number | null
+  >(null);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [filters, setFilters] = React.useState({
     search: "",
@@ -45,7 +49,7 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
       month: "short",
       year: "numeric",
     });
-  }
+  };
 
   const handleDeleteClick = (reservationId: number) => {
     setSelectedReservationId(reservationId);
@@ -91,7 +95,8 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
     list = list.filter((r: any) => r.status === filters.status);
   }
 
-  if (filters.date) list = list.filter((r: any) => r.date.startsWith(filters.date));
+  if (filters.date)
+    list = list.filter((r: any) => r.date.startsWith(filters.date));
 
   list = list.slice().sort((a: any, b: any) => {
     return new Date(a.date).getTime() - new Date(b.date).getTime();
@@ -100,21 +105,8 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
   if (list.length === 0)
     return (
       <div className="flex flex-col gap-4 items-center p-5">
+        <div className="w-full max-w-sm border-t border-gray-300"></div>
         <ReservationFilter filters={filters} onChange={setFilters} />
-        <div className="w-full max-w-sm flex justify-end">
-          <Button
-            variant="link"
-            onClick={() =>
-              setFilters({
-                search: "",
-                status: "",
-                date: "",
-              })
-            }
-          >
-            Borrar filtros
-          </Button>
-        </div>
         <div className="py-10">
           <EmptyState
             iconName="CalendarClock"
@@ -125,37 +117,28 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
       </div>
     );
 
+  const groupedByDate = list.reduce((groups: any, reservation: Reservation) => {
+    const date = formatDate(reservation.date);
+    if (!groups[date]) groups[date] = [];
+    groups[date].push(reservation);
+    return groups;
+  }, {});
+
   return (
     <div className="flex flex-col gap-4 items-center p-5">
       <div className="w-full max-w-sm border-t border-gray-300"></div>
       <ReservationFilter filters={filters} onChange={setFilters} />
-      <div className="w-full max-w-sm flex justify-end">
-        <Button
-          variant="link"
-          onClick={() =>
-            setFilters({
-              search: "",
-              status: "",
-              date: "",
-            })
-          }
-        >
-          Borrar filtros
-        </Button>
-      </div>
-      <div className="w-full max-w-sm border-t border-gray-300"></div>
-      {list
-        ?.slice()
-        .sort(
-          (a: Reservation, b: Reservation) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        )
-        .map((reservation: Reservation) => (
-          <Card className="w-full max-w-sm text-left" key={reservation.id}>
-            <CardContent>
-              <div className="flex flex-row justify-between items-center mb-1">
-                <strong>{reservation.name}</strong>
-                <div className="flex flex-row items-center gap-2">
+      {Object.keys(groupedByDate).map((date) => (
+        <div key={date} className="w-full max-w-sm">
+          <h2 className="flex justify-start text-lg font-semibold text-gray-400 mb-2">
+            {date}
+          </h2>
+
+          {groupedByDate[date].map((reservation: Reservation) => (
+            <Card className="w-full text-left mb-3" key={reservation.id}>
+              <CardContent>
+                <div className="flex flex-row justify-between items-center mb-1">
+                  <strong>{reservation.name} | M{reservation.table_id}</strong>
                   <CircleX
                     size={20}
                     color="#e20404"
@@ -163,29 +146,30 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
                     onClick={() => handleDeleteClick(reservation.id)}
                   />
                 </div>
-              </div>
-              <p className="mb-1">
-                {formatDate(reservation.date)} | {reservation.time}
-              </p>
-              <div className="flex flex-row justify-between items-center gap-2">
-                <p>{reservation.phone}</p>
-                <p
-                  className={
-                    reservation.status === "CONFIRMED"
-                      ? "text-green-500"
-                      : reservation.status === "CANCELLED"
-                      ? "text-red-500"
-                      : "text-gray-500"
-                  }
-                >
-                  {reservation.status === "CONFIRMED"
-                    ? "CONFIRMADO"
-                    : "CANCELADO"}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+
+                <p className="mb-1">{reservation.time} - {reservation.people}pax</p>
+
+                <div className="flex flex-row justify-between items-center gap-2">
+                  <p>{reservation.phone}</p>
+                  <p
+                    className={
+                      reservation.status === "CONFIRMED"
+                        ? "text-green-500"
+                        : reservation.status === "CANCELLED"
+                        ? "text-red-500"
+                        : "text-gray-500"
+                    }
+                  >
+                    {reservation.status === "CONFIRMED"
+                      ? "CONFIRMADO"
+                      : "CANCELADO"}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ))}
       <ConfirmationModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -193,7 +177,6 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
       />
     </div>
   );
-
 }
 
 export default CurrentReservations;
