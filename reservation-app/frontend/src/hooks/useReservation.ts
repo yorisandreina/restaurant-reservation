@@ -12,7 +12,7 @@ interface ReservationParams {
   businessId: number;
   tableId: number;
 }
-// add filter by businessId
+
 export const useReservation = () => {
   const [reservation, setReservation] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
