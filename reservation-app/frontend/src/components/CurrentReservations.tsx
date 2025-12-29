@@ -138,7 +138,7 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
             <Card className="w-full text-left mb-3" key={reservation.id}>
               <CardContent>
                 <div className="flex flex-row justify-between items-center mb-1">
-                  <strong>{reservation.name} | M{reservation.table_id}</strong>
+                  <strong>{reservation.name} | {reservation.table_id}</strong>
                   <CircleX
                     size={20}
                     color="#e20404"
