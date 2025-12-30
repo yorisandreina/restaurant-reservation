@@ -34,6 +34,13 @@ export const createReservationFromAgent = async (req, res) => {
       res_key
     });
 
+    if (
+      newReservation?.statement === "Throw Error" &&
+      newReservation?.payload
+    ) {
+      return res.status(400).json({ status: "not confirmed", error: newReservation.payload, message: "Ya existe una reserva en esa fecha y hora, por favor eliga una nueva." });
+    }
+
     return res
       .status(201)
       .json({ status: "confirmed", message: "Reserva creada exitosamente", data: newReservation });

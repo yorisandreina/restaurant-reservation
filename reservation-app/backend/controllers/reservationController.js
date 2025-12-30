@@ -31,10 +31,9 @@ export const createReservation = async (req, res) => {
       phone,
       res_key
     });
-    console.log(newReservation)
 
     if (newReservation?.statement === "Throw Error" && newReservation?.payload) {
-      throw new Error(newReservation.payload);
+      return res.status(400).json({ error: newReservation.payload });
     }
 
     return res
