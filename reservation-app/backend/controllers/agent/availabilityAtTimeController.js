@@ -22,7 +22,8 @@ export const checkAvailabilityAtTime = async (req, res) => {
     }
 
   try {
-    const [date, time] = dateTime.split("T");
+    const [date, fullTime] = dateTime.split("T");
+    const time = fullTime.split("+")[0];
     const dow = new Date(date).getDay();
     const reservationSlots = await getReservationDurationByBusiness(
       business_id,
