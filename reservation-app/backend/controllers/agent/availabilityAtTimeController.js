@@ -104,12 +104,15 @@ export const checkAvailabilityAtTime = async (req, res) => {
     }
 
     const selectedStart = new Date(`${date}T${time}:00Z`).getTime();
+    console.log('selected start', selectedStart)
     const selectedEnd = selectedStart + reservationDuration * 60 * 1000;
+    console.log('selected end', selectedEnd)
 
     let availableTables = [];
 
     for (const table of validTables) {
       const tableReservations = reservationsByTable.get(table.id) || [];
+      console.log('table reservations', tableReservations)
       const hasConflict = tableReservations.some(
         (r) => !(selectedEnd <= r.start || selectedStart >= r.end)
       );
