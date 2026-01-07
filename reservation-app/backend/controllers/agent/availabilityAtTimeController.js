@@ -104,7 +104,7 @@ export const checkAvailabilityAtTime = async (req, res) => {
       reservationsByTable.get(mesaId).push({ start, end });
     }
 
-    const selectedStart = new Date(`${date}T${time}:00Z`).getTime();
+    const selectedStart = new Date(`${date}T${time}`).getTime();
     console.log('selected start', selectedStart)
     const selectedEnd = selectedStart + reservationDuration * 60 * 1000;
     console.log('selected end', selectedEnd)
