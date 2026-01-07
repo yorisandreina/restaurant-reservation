@@ -113,11 +113,14 @@ export const checkAvailabilityAtTime = async (req, res) => {
       const hasConflict = tableReservations.some(
         (r) => !(selectedEnd <= r.start || selectedStart >= r.end)
       );
+      console.log('has conflict?', hasConflict)
       if (!hasConflict) availableTables.push(table.id);
     }
 
     const disponible = availableTables.length > 0;
+    console.log('mesa disponible', disponible)
     const mesa_sugerida = disponible ? availableTables[0] : null;
+    console.log('mesa sugerida', mesa_sugerida)
 
     let nextAvailability = null;
 
@@ -158,6 +161,7 @@ export const checkAvailabilityAtTime = async (req, res) => {
     }
 
     return res.json({
+      message: "No se ha podido revisar la disponibilidad, por favor inténtelo de nuevo",
       disponible,
       mesa_sugerida,
       nextAvailability,
