@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PeoplePicker from "../components/PeoplePicker";
 import DatePicker from "../components/DatePicker";
 import AvailableTimeSlots from "../components/AvailableTimeSlots";
@@ -20,8 +20,21 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const { loading, error, createReservation } = useReservation();
+
+  useEffect(() => {
+    if (error) {
+      setShowError(true);
+
+      const timer = setTimeout(() => {
+        setShowError(false);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   const handleOpenModal = () => {
     if (!date || !selectedTimeSlot) {
@@ -106,7 +119,7 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
         onClose={() => setShowModal(false)}
         onSubmit={handleSubmit}
       />
-      {error && <p className="text-red-500">{error}</p>}
+      {showError && <p className="text-red-500">{error}</p>}
       {showAlert && (
         <Alert
           variant="destructive"

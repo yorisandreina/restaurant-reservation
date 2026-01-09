@@ -107,13 +107,13 @@ const BookingScreen: React.FC = () => {
       >
         {loading ? <Spinner className="size-5" /> : "Continuar"}
       </Button>
-      <Button
+{/*       <Button
         className="mt-4 w-full max-w-sm hover:bg-transparent"
         variant="outline"
         onClick={() => navigate("/client-auth")}
       >
         I am a client
-      </Button>
+      </Button> */}
 
       <BookingDetailsModal
         open={showModal}

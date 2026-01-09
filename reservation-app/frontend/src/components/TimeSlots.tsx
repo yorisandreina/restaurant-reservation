@@ -22,7 +22,7 @@ interface TimeSlot {
 }
 
 const TimeSlots: React.FC<TimeSlotProps> = ({ businessId, refreshKey, onSlotsStatusChange }) => {
-  const { loading, error, slots } = getTimeSlots({businessId, refreshKey});
+  const { loading, error, slots } = getTimeSlots({ businessId, refreshKey });
 
   React.useEffect(() => {
     if (onSlotsStatusChange) {
@@ -41,7 +41,8 @@ const TimeSlots: React.FC<TimeSlotProps> = ({ businessId, refreshKey, onSlotsSta
       "Viernes",
       "Sábado",
     ];
-    return days[dow - 1];
+
+    return days[dow];
   };
 
   if (loading)
@@ -53,16 +54,16 @@ const TimeSlots: React.FC<TimeSlotProps> = ({ businessId, refreshKey, onSlotsSta
 
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
-    if (!slots?.data || slots?.data.length === 0)
-      return (
-        <div className="py-10">
-          <EmptyState
-            iconName="ClockAlert"
-            header="No hay horarios"
-            description="Aún no hay horarios registrados."
-          />
-        </div>
-      );
+  if (!slots?.data || slots?.data.length === 0)
+    return (
+      <div className="py-10">
+        <EmptyState
+          iconName="ClockAlert"
+          header="No hay horarios"
+          description="Aún no hay horarios registrados."
+        />
+      </div>
+    );
 
   return (
     <div className="flex flex-col w-full gap-4 items-center p-2">
