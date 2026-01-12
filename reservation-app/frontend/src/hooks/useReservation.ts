@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/apiClient";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface ReservationParams {
   name: string;
@@ -17,10 +17,6 @@ export const useReservation = () => {
   const [reservation, setReservation] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const clearError = () => {
-    setError(null);
-  };
 
   const createReservation = async (params: ReservationParams) => {
     const { name, lastName, phone, email, date, people, time, businessId, tableId } =
@@ -73,7 +69,17 @@ export const useReservation = () => {
     }
   };
 
-  return { reservation, loading, error, clearError, createReservation };
+  useEffect(() => {
+    if (!error) return;
+
+    const timer = setTimeout(() => {
+      setError(null);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [error]);
+
+  return { reservation, loading, error, createReservation };
 };
 
 export const eraseReservation = () => {
