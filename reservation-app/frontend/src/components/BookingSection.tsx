@@ -22,19 +22,20 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
 
-  const { loading, error, createReservation } = useReservation();
+  const { loading, error, clearError, createReservation } = useReservation();
 
   useEffect(() => {
-    if (error) {
-      setShowError(true);
+    if (!error) return;
 
-      const timer = setTimeout(() => {
-        setShowError(false);
-      }, 5000);
+    setShowError(true);
 
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
+    const timer = setTimeout(() => {
+      setShowError(false);
+      clearError();
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [error, clearError]);
 
   const handleOpenModal = () => {
     if (!date || !selectedTimeSlot) {

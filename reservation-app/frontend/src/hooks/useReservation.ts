@@ -18,6 +18,10 @@ export const useReservation = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const clearError = () => {
+    setError(null);
+  };
+
   const createReservation = async (params: ReservationParams) => {
     const { name, lastName, phone, email, date, people, time, businessId, tableId } =
       params;
@@ -69,7 +73,7 @@ export const useReservation = () => {
     }
   };
 
-  return { reservation, loading, error, createReservation };
+  return { reservation, loading, error, clearError, createReservation };
 };
 
 export const eraseReservation = () => {

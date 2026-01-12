@@ -165,7 +165,7 @@ export const checkAvailabilityAtTime = async (req, res) => {
     }
 
     return res.json({
-      message: "No se ha podido revisar la disponibilidad, por favor inténtelo de nuevo",
+      message: "No se ha podido realizar la reserva, por favor inténtelo de nuevo",
       disponible,
       mesa_sugerida,
       nextAvailability,
