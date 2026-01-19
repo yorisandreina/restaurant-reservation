@@ -18,6 +18,12 @@ const TimeSlotsScreen = () => {
 
   const { postTimeSlots, loading, error, message } = createTimeSlots();
 
+  useEffect(() => {
+    if (!businessId) {
+      navigate("/client-auth", { replace: true });
+    }
+  }, []);
+
   const handleSubmit = async (
     formData: {
       dow: number;

@@ -3,7 +3,7 @@ import TableFormModal from "@/components/TableFormModal";
 import { Button } from "@/components/ui/button";
 import { createTable } from "@/hooks/useTables";
 import { ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const TablesScreen = () => {
@@ -14,6 +14,12 @@ const TablesScreen = () => {
   const businessId = Number(localStorage.getItem("businessId"));
 
   const { postTable, loading, error } = createTable();
+
+  useEffect(() => {
+    if (!businessId) {
+      navigate("/client-auth", { replace: true });
+    }
+  }, []);
 
   const handleSubmit = async (formData: {
     name: string;
