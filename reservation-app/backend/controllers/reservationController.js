@@ -1,3 +1,4 @@
+import { sendReservationEmail } from "../helpers/sendConfirmation.js";
 import { createReservationInDB, deleteReservation } from "../models/reservationModel.js";
 
 export const createReservation = async (req, res) => {
@@ -34,6 +35,19 @@ export const createReservation = async (req, res) => {
 
     if (newReservation?.statement === "Throw Error" && newReservation?.payload) {
       return res.status(400).json({ error: newReservation.payload });
+    }
+
+    try {
+      await sendReservationEmail({
+        to: email,
+        name,
+        lastName,
+        date,
+        time,
+        people,
+      });
+    } catch (emailError) {
+      console.error("Error sending confirmation email:", emailError);
     }
 
     return res

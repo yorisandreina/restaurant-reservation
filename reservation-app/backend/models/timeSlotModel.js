@@ -1,7 +1,9 @@
 import apiClient from "../helpers/apiClient.js";
 
 export const getReservationDurationByBusiness = async (business_id, dow) => {
-  const { data } = await apiClient.get("/time_slots");
+  const { data } = await apiClient.get("/time_slots", {
+    params: { business_id },
+  });
 
   const filtered = data.filter(
     (slot) =>
