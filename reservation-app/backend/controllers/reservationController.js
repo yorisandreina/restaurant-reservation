@@ -1,5 +1,4 @@
-import { sendReservationEmail } from "../helpers/sendConfirmation.js";
-import { createReservationInDB, deleteReservation } from "../models/reservationModel.js";
+import { createReservationInDB, deleteReservation, sendConfirmationEmail } from "../models/reservationModel.js";
 
 export const createReservation = async (req, res) => {
   try { 
@@ -38,13 +37,12 @@ export const createReservation = async (req, res) => {
     }
 
     try {
-      await sendReservationEmail({
-        to: email,
+      await sendConfirmationEmail({
         name,
-        lastName,
         date,
         time,
         people,
+        email
       });
     } catch (emailError) {
       console.error("Error sending confirmation email:", emailError);
