@@ -64,7 +64,9 @@ const TimeSlotsScreen = () => {
         <h1 className="text-2xl font-semibold">Horario</h1>
       </div>
       {hasSlots && !loading && (
-        <p className="text-left w-sm mb-2 text-gray-400">Pasa el cursor sobre el ícono para ver más información.</p>
+        <p className="text-left w-sm mb-2 text-gray-400">
+          Pasa el cursor sobre el ícono para ver más información.
+        </p>
       )}
       {!hasSlots && !loading && (
         <Button
@@ -74,14 +76,6 @@ const TimeSlotsScreen = () => {
         >
           Agregar horario
         </Button>
-      )}
-      {showAlert && message && (
-        <Alert
-          variant="destructive"
-          className="my-2 w-md border-none justify-center flex"
-        >
-          <AlertTitle>{message}</AlertTitle>
-        </Alert>
       )}
       <TimeSlots
         businessId={businessId}
@@ -95,6 +89,14 @@ const TimeSlotsScreen = () => {
         loading={loading}
         error={error}
       />
+      {showAlert && message && (
+        <Alert
+          variant="default"
+          className="my-4 w-sm border-none justify-center flex bg-green-100 text-green-700"
+        >
+          <AlertTitle>{message}</AlertTitle>
+        </Alert>
+      )}
     </div>
   );
 };

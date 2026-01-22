@@ -66,6 +66,8 @@ export const createTimeSlots = () => {
       setError(null);
       setMessage(null);
 
+      console.log('time slot body', body)
+
       const data = await apiClient("/set-time-slots", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

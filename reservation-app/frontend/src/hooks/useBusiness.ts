@@ -1,7 +1,7 @@
 import { apiClient } from "@/lib/apiClient";
 import { useState, useEffect } from "react";
 
-export const useBusiness = (slug: string | undefined) => {
+export const useBusiness = (slug?: string) => {
   const [business, setBusiness] = useState<any | undefined>(undefined);
   const [loadingBusiness, setLoadingBusiness] = useState(false);
   const [errorBusiness, setErrorBusiness] = useState<string | null>(null);
@@ -29,5 +29,39 @@ export const useBusiness = (slug: string | undefined) => {
     fetchBusiness();
   }, [slug]);
 
-  return { business, loadingBusiness, errorBusiness };
+  const fetchBusinessByUserId = async (userId: number | string) => {
+    if (!userId) {
+      throw new Error("userId is required");
+    }
+
+    try {
+      setLoadingBusiness(true);
+      setErrorBusiness(null);
+
+      const data = await apiClient(`/user-id-businesses?user_id=${userId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const business = Array.isArray(data) ? data[0] : data;
+      console.log('business', business)
+
+      localStorage.setItem("businessId", JSON.stringify(business?.id));
+
+      setBusiness(business);
+      return business;
+    } catch (err: any) {
+      setErrorBusiness(err.message);
+      throw err;
+    } finally {
+      setLoadingBusiness(false);
+    }
+  };
+
+  return {
+    business,
+    loadingBusiness,
+    errorBusiness,
+    fetchBusinessByUserId,
+  };
 };

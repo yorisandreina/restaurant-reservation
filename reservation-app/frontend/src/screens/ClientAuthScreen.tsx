@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "@/hooks/useAuth";
+import { useBusiness } from "@/hooks/useBusiness";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
@@ -24,7 +25,9 @@ const ClientAuthScreen = () => {
   const [isSetPassword, setIsSetPassword] = useState(false);
   const [message, setMessage] = useState("");
 
-  const { signup, validate, login, getCurrentUser, loading, error } = useAuth();
+  const { signup, validate, login, getCurrentBusinessUser, loading, error } = useAuth();
+  
+  const { fetchBusinessByUserId } = useBusiness();
 
   useEffect(() => {
     localStorage.removeItem("businessId");
@@ -55,7 +58,7 @@ const ClientAuthScreen = () => {
       const res = await signup(username, password);
       if (!res) return;
 
-      await getCurrentUser();
+      await getCurrentBusinessUser();
 
       navigate("/client-home");
       return;
@@ -64,7 +67,10 @@ const ClientAuthScreen = () => {
     const res = await login(username, password);
     if (!res) return;
 
-    await getCurrentUser();
+    const user = await getCurrentBusinessUser();
+    console.log('user', user)
+
+    await fetchBusinessByUserId(user.id);
 
     console.log("Login response:", res);
     console.log("businessId:", localStorage.getItem("businessId"));

@@ -88,8 +88,7 @@ export const useAuth = () => {
     }
   };
 
-  const getCurrentUser = async () => {
-    console.log("current user called")
+  const getCurrentBusinessUser = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -100,7 +99,7 @@ export const useAuth = () => {
       }
       console.log("token recibido en current user", token)
 
-      const data = await apiClient("/get-user",
+      const user = await apiClient("/get-user",
         {
           method: "GET",
           headers: {
@@ -108,11 +107,8 @@ export const useAuth = () => {
           },
         }
       );
-      console.log("get current user data", data)
 
-      localStorage.setItem("businessId", JSON.stringify(data?.data?.id));
-
-      return data.data;
+      return user.data;
     } catch (err: any) {
       setError(err.message);
       console.log(err.message)
@@ -122,5 +118,5 @@ export const useAuth = () => {
     }
   }
 
-  return { validate, signup, login, getCurrentUser, loading, error };
+  return { validate, signup, login, getCurrentBusinessUser, loading, error };
 };

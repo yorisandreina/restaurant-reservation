@@ -39,13 +39,13 @@ interface DaySlot {
 }
 
 const daysOfWeek = [
+  { dow: 0, label: "Domingo" },
   { dow: 1, label: "Lunes" },
   { dow: 2, label: "Martes" },
   { dow: 3, label: "Miércoles" },
   { dow: 4, label: "Jueves" },
   { dow: 5, label: "Viernes" },
   { dow: 6, label: "Sábado" },
-  { dow: 7, label: "Domingo" },
 ];
 
 const TimeSlotFormModal: React.FC<TimeSlotFormModalProps> = ({

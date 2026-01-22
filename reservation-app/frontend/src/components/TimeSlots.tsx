@@ -19,6 +19,7 @@ interface TimeSlot {
   end_time: string;
   slot_min: number;
   max_duration: number;
+  closed: boolean;
 }
 
 const TimeSlots: React.FC<TimeSlotProps> = ({ businessId, refreshKey, onSlotsStatusChange }) => {
@@ -68,41 +69,49 @@ const TimeSlots: React.FC<TimeSlotProps> = ({ businessId, refreshKey, onSlotsSta
   return (
     <div className="flex flex-col w-full gap-4 items-center p-2">
       <Card className="py-5 px-2">
-        {slots?.data.map((timeSlot: TimeSlot) => (
-          <CardContent key={timeSlot.id}>
-            <div className="flex flex-row w-xs items-center justify-between">
-              <p>{getDayName(timeSlot.dow)}</p>
-              <div className="flex flex-row gap-2 items-center">
-                <p>
-                  {timeSlot.start_time} - {timeSlot.end_time}
-                </p>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info
-                        size={18}
-                        color="#999999"
-                        className="cursor-pointer"
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-gray-500 text-background p-2 rounded-sm">
-                      <div className="text-sm">
-                        <p>
-                          <strong>Duración del slot:</strong>{" "}
-                          {timeSlot.slot_min} min
-                        </p>
-                        <p>
-                          <strong>Duración máx.:</strong>{" "}
-                          {timeSlot.max_duration} min
-                        </p>
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+        {[...slots?.data]
+          .sort((a, b) => a.dow - b.dow)
+          .map((timeSlot: TimeSlot) => (
+            <CardContent key={timeSlot.id}>
+              <div className="flex flex-row w-xs items-center justify-between">
+                <p>{getDayName(timeSlot.dow)}</p>
+                <div className="flex flex-row gap-2 items-center">
+                  {timeSlot.closed ? (
+                    <p>Cerrado</p>
+                  ) : (
+                    <>
+                      <p>
+                        {timeSlot.start_time} - {timeSlot.end_time}
+                      </p>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info
+                              size={18}
+                              color="#999999"
+                              className="cursor-pointer"
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-500 text-background p-2 rounded-sm">
+                            <div className="text-sm">
+                              <p>
+                                <strong>Duración del slot:</strong>{" "}
+                                {timeSlot.slot_min} min
+                              </p>
+                              <p>
+                                <strong>Duración máx.:</strong>{" "}
+                                {timeSlot.max_duration} min
+                              </p>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          </CardContent>
-        ))}
+            </CardContent>
+          ))}
       </Card>
     </div>
   );

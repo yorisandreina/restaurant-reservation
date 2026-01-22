@@ -21,6 +21,7 @@ export const getTimeSlots = async (req, res) => {
 export const setTimeSlots = async (req, res) => {
   try {
     const body = req.body;
+    console.log(req.body)
     const timeSlots = Array.isArray(body) ? body : [body];
 
     const missingFields = timeSlots.some((slot) => {
@@ -74,7 +75,7 @@ export const setTimeSlots = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: "Horarios creados correctamente",
+      message: "Horarios creados correctamente.",
       data: results.map((r) => r.data),
     });
   } catch (error) {
