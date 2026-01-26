@@ -3,26 +3,37 @@ import OptionSection from "@/components/OptionSection";
 import CurrentReservations from "@/components/CurrentReservations";
 import BookingSection from "@/components/BookingSection";
 import SettingsSection from "@/components/SettingsSection";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const ClientScreen: React.FC = () => {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState("reservations");
   const [refreshKey, setRefreshKey] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const businessId = Number(localStorage.getItem("businessId"));
-  console.log("businessId desde ClientScreen:", businessId);
+
+  const tabFromUrl = searchParams.get("tab") || "reservations";
 
   useEffect(() => {
     if (!businessId) {
       navigate("/client-auth", { replace: true });
     }
-  }, []);
+  }, [businessId, navigate]);
+
+  useEffect(() => {
+    setSelectedOption(tabFromUrl);
+  }, [tabFromUrl]);
+
+  const handleChangeOption = (option: string) => {
+    setSelectedOption(option);
+    setSearchParams({ tab: option });
+  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">
       <div className="flex flex-wrap item-center justify-between pt-4 gap-4">
-        <OptionSection value={selectedOption} onChange={setSelectedOption} />
+        <OptionSection value={selectedOption} onChange={handleChangeOption} />
       </div>
       {selectedOption === "reservations" ? (
         <div className="w-full items-center">
