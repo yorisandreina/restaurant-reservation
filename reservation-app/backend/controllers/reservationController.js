@@ -2,7 +2,7 @@ import { createReservationInDB, deleteReservation, sendConfirmationEmail } from 
 
 export const createReservation = async (req, res) => {
   try { 
-    const { business_id, table_id, date, people, time, name, lastName, email, phone } =
+    const { business_id, table_id, date, people, time, name, lastName, email, phone, businessName} =
       req.body;
 
     if (
@@ -12,7 +12,8 @@ export const createReservation = async (req, res) => {
       !people ||
       !time ||
       !name ||
-      !phone
+      !phone ||
+      !businessName
     ) {
       return res.status(400).json({ error: "Faltan parámetros obligatorios" });
     }
@@ -42,7 +43,8 @@ export const createReservation = async (req, res) => {
         date,
         time,
         people,
-        email
+        email,
+        businessName
       });
     } catch (emailError) {
       console.error("Error sending confirmation email:", emailError);

@@ -11,6 +11,7 @@ interface ReservationParams {
   time: string;
   businessId: number;
   tableId: number;
+  businessName: string;
 }
 
 export const useReservation = () => {
@@ -19,7 +20,7 @@ export const useReservation = () => {
   const [error, setError] = useState<string | null>(null);
 
   const createReservation = async (params: ReservationParams) => {
-    const { name, lastName, phone, email, date, people, time, businessId, tableId } =
+    const { name, lastName, phone, email, date, people, time, businessId, tableId, businessName } =
       params;
 
     if (
@@ -31,7 +32,8 @@ export const useReservation = () => {
       !people ||
       !time ||
       !businessId ||
-      !tableId
+      !tableId ||
+      !businessName
     ) {
       setError("Todos los campos son obligatorios");
       return;
@@ -54,6 +56,7 @@ export const useReservation = () => {
           phone,
           email,
           time,
+          businessName
         }),
       });
 
