@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PeoplePicker from "../components/PeoplePicker";
 import DatePicker from "../components/DatePicker";
 import AvailableTimeSlots from "../components/AvailableTimeSlots";
@@ -20,10 +20,14 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [businessName, setBusinessName] = useState<string | null>("");
 
   const { loading, error, createReservation } = useReservation();
 
-  const businessName = String(localStorage.getItem("businessName"));
+  useEffect(() => {
+    const name = localStorage.getItem("businessName");
+    setBusinessName(name);
+  }, []);
 
   const handleOpenModal = () => {
     if (!date || !selectedTimeSlot) {

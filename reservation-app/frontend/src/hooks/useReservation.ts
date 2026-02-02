@@ -11,7 +11,7 @@ interface ReservationParams {
   time: string;
   businessId: number;
   tableId: number;
-  businessName: string;
+  businessName: string | null;
 }
 
 export const useReservation = () => {

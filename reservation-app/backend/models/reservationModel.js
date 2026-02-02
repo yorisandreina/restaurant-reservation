@@ -29,7 +29,6 @@ export const deleteReservation = async (reservation_id) => {
 };
 
 export const sendConfirmationEmail = async(name, date, time, people, email) => {
-  console.log("send confirmation email called")
   const { data } = await axios.post(
     "https://hook.eu2.make.com/njnuz4d24nlyvfjj28mm6tbmxwh9qnq1",
     {
