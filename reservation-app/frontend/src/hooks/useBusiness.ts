@@ -45,8 +45,10 @@ export const useBusiness = (slug?: string) => {
 
       const business = Array.isArray(data) ? data[0] : data;
 
-      localStorage.setItem("businessId", JSON.stringify(business?.id));
-      localStorage.setItem("businessName", business?.name);
+      if (business?.id && business?.name) {
+        localStorage.setItem("businessId", String(business.id));
+        localStorage.setItem("businessName", business.name);
+      }
 
       setBusiness(business);
       return business;

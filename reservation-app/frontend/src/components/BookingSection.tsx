@@ -43,6 +43,11 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
     phone: string;
     email: string;
   }) => {
+    if (!businessName || businessName === "undefined") {
+      console.error("Invalid businessName", businessName);
+      return;
+    }
+
     const reservationCreated = await createReservation({
       name: formData.name,
       lastName: formData.lastName,
