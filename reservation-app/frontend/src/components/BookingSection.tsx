@@ -20,7 +20,7 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [businessName, setBusinessName] = useState<string | null>("");
+  const [businessName, setBusinessName] = useState<string | null>(null);
 
   const { loading, error, createReservation } = useReservation();
 
@@ -53,7 +53,7 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
       time: selectedTimeSlot,
       businessId: businessId,
       tableId: tableId,
-      businessName: businessName
+      businessName
     });
 
     if (reservationCreated) {
@@ -95,7 +95,7 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
         className="mt-6 w-full max-w-sm hover:bg-transparent"
         variant="outline"
         onClick={handleOpenModal}
-        disabled={!date || !selectedTimeSlot}
+        disabled={!date || !selectedTimeSlot || !businessName}
       >
         {loading ? <Spinner className="size-5" /> : "Continuar"}
       </Button>
