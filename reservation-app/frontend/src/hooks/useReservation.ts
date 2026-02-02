@@ -56,7 +56,7 @@ export const useReservation = () => {
           phone,
           email,
           time,
-          businessName
+          businessName: businessName
         }),
       });
 

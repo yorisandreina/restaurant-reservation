@@ -2,7 +2,7 @@ import { createReservationInDB, deleteReservation, sendConfirmationEmail } from 
 
 export const createReservation = async (req, res) => {
   try { 
-    const { business_id, table_id, date, people, time, name, lastName, email, phone, businessName} =
+    const { business_id, table_id, date, people, time, name, lastName, email, phone, businessName } =
       req.body;
 
     console.log('req body at create reservation', req.body)

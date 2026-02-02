@@ -24,7 +24,6 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
   const { loading, error, createReservation } = useReservation();
 
   const businessName = String(localStorage.getItem("businessName"));
-  console.log("businessName in local storage", businessName);
 
   const handleOpenModal = () => {
     if (!date || !selectedTimeSlot) {
@@ -50,7 +49,7 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
       time: selectedTimeSlot,
       businessId: businessId,
       tableId: tableId,
-      businessName
+      businessName: businessName
     });
 
     if (reservationCreated) {
