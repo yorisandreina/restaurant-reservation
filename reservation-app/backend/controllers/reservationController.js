@@ -5,6 +5,8 @@ export const createReservation = async (req, res) => {
     const { business_id, table_id, date, people, time, name, lastName, email, phone, businessName} =
       req.body;
 
+    console.log('req body at create reservation', req.body)
+
     if (
       !business_id ||
       !table_id ||
