@@ -48,6 +48,7 @@ const BookingScreen: React.FC = () => {
       time: selectedTimeSlot,
       businessId: business.id,
       tableId: tableId,
+      businessName: business.name
     });
 
     if (reservationCreated) {
