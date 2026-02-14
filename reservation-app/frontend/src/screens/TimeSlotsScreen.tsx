@@ -127,6 +127,7 @@ const TimeSlotsScreen = () => {
       {hasSlots === true && (
         <Button
           variant="destructive"
+          className="mt-4 w-full max-w-sm"
           onClick={handleDelete}
           disabled={deleteLoading}
         >

@@ -29,8 +29,6 @@ export const createTimeSlots = async (timeSlotsData) => {
 };
 
 export const deleteBusinessTimeSlots = async (business_id) => {
-  const { data } = await apiClient.delete("/time_slots", {
-    params: { business_id },
-  });
+  const { data } = await apiClient.delete(`/time_slots/${business_id}`);
   return data;
 };
