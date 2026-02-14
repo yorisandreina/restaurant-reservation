@@ -1,4 +1,4 @@
-import { createTimeSlots, getBusinessTimeSlots } from "../models/timeSlotModel.js";
+import { createTimeSlots, deleteBusinessTimeSlots, getBusinessTimeSlots } from "../models/timeSlotModel.js";
 
 export const getTimeSlots = async (req, res) => {
   try {
@@ -86,4 +86,19 @@ export const setTimeSlots = async (req, res) => {
   }
 };
 
+export const deleteTimeSlots = async (req, res) => {
+  try {
+    const { business_id } = req.query;
 
+    if (!business_id) {
+      return res.status(400).json({ error: "Faltan parámetros obligatorios" });
+    }
+
+    const timeSlots = await deleteBusinessTimeSlots(business_id);
+
+    return res.status(201).json({ message: "Exito", data: timeSlots });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
+};

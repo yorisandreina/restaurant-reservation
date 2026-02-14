@@ -2,7 +2,7 @@ import TimeSlotFormModal from "@/components/TimeSlotFormModal";
 import TimeSlots from "@/components/TimeSlots";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { createTimeSlots } from "@/hooks/useTimeSlots";
+import { createTimeSlots, deleteTimeSlots } from "@/hooks/useTimeSlots";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,11 +12,19 @@ const TimeSlotsScreen = () => {
   const [openModal, setOpenModal] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
-  const [hasSlots, setHasSlots] = useState(false);
+  const [hasSlots, setHasSlots] = useState<boolean | null>(null);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [isAlertError, setIsAlertError] = useState(false);
 
   const businessId = Number(localStorage.getItem("businessId"));
 
-  const { postTimeSlots, loading, error, message } = createTimeSlots();
+  const { postTimeSlots, loading, error } = createTimeSlots();
+  const {
+    removeTimeSlots,
+    loading: deleteLoading,
+    error: deleteError,
+    message: deleteMessage,
+  } = deleteTimeSlots();
 
   useEffect(() => {
     if (!businessId) {
@@ -34,20 +42,47 @@ const TimeSlotsScreen = () => {
       maxDuration: number;
     }[]
   ) => {
-    await postTimeSlots(
-      formData.map((day) => ({
-        businessId: businessId,
-        dow: day.dow,
-        closed: day.closed,
-        startTime: day.startTime,
-        endTime: day.endTime,
-        slotMin: day.slotMin,
-        maxDuration: day.maxDuration,
-      }))
-    );
-    setOpenModal(false);
-    setShowAlert(true);
-    setRefreshKey((prev) => prev + 1);
+    try {
+      const data = await postTimeSlots(
+        formData.map((day) => ({
+          businessId: businessId,
+          dow: day.dow,
+          closed: day.closed,
+          startTime: day.startTime,
+          endTime: day.endTime,
+          slotMin: day.slotMin,
+          maxDuration: day.maxDuration,
+        }))
+      );
+
+      setOpenModal(false);
+      setIsAlertError(false);
+      setAlertMessage(data?.message || "Horarios guardados correctamente.");
+      setShowAlert(true);
+      setRefreshKey((prev) => prev + 1);
+    } catch (err: any) {
+      setIsAlertError(true);
+      setAlertMessage(err?.message || "No se pudieron guardar los horarios.");
+      setShowAlert(true);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const data = await removeTimeSlots(businessId);
+      setIsAlertError(false);
+      setAlertMessage(
+        data?.message || deleteMessage || "Horarios eliminados correctamente."
+      );
+      setShowAlert(true);
+      setRefreshKey((prev) => prev + 1);
+    } catch (err: any) {
+      setIsAlertError(true);
+      setAlertMessage(
+        err?.message || deleteError || "No se pudieron eliminar los horarios."
+      );
+      setShowAlert(true);
+    }
   };
 
   useEffect(() => {
@@ -63,12 +98,12 @@ const TimeSlotsScreen = () => {
         <ArrowLeft onClick={() => navigate(-1)} className="cursor-pointer" />
         <h1 className="text-2xl font-semibold">Horario</h1>
       </div>
-      {hasSlots && !loading && (
+      {hasSlots === true && (
         <p className="text-left w-sm mb-2 text-gray-400">
           Pasa el cursor sobre el ícono para ver más información.
         </p>
       )}
-      {!hasSlots && !loading && (
+      {hasSlots === false && !loading && (
         <Button
           variant={"outline"}
           className="w-sm mb-4"
@@ -89,12 +124,25 @@ const TimeSlotsScreen = () => {
         loading={loading}
         error={error}
       />
-      {showAlert && message && (
+      {hasSlots === true && (
+        <Button
+          variant="destructive"
+          onClick={handleDelete}
+          disabled={deleteLoading}
+        >
+          {deleteLoading ? "Eliminando horarios..." : "Eliminar horarios existentes"}
+        </Button>
+      )}
+      {showAlert && alertMessage && (
         <Alert
           variant="default"
-          className="my-4 w-sm border-none justify-center flex bg-green-100 text-green-700"
+          className={`my-4 w-sm border-none justify-center flex ${
+            isAlertError
+              ? "bg-red-100 text-red-700"
+              : "bg-green-100 text-green-700"
+          }`}
         >
-          <AlertTitle>{message}</AlertTitle>
+          <AlertTitle>{alertMessage}</AlertTitle>
         </Alert>
       )}
     </div>

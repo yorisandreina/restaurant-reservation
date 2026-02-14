@@ -27,3 +27,10 @@ export const createTimeSlots = async (timeSlotsData) => {
   console.log(typeof data)
   return data;
 };
+
+export const deleteBusinessTimeSlots = async (business_id) => {
+  const { data } = await apiClient.delete("/time_slots", {
+    params: { business_id },
+  });
+  return data;
+};

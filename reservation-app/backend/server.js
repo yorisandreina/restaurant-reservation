@@ -4,7 +4,7 @@ import { checkAvailability } from "./controllers/availabilityController.js";
 import { createReservation, eraseReservation } from "./controllers/reservationController.js";
 import { getReservations } from "./controllers/getReservationsController.js";
 import { eraseTable, getTables, setTable } from "./controllers/tableController.js";
-import { getTimeSlots, setTimeSlots } from "./controllers/timeSlotController.js";
+import { deleteTimeSlots, getTimeSlots, setTimeSlots } from "./controllers/timeSlotController.js";
 import { checkAvailabilityAtTime } from "./controllers/agent/availabilityAtTimeController.js";
 import { createReservationFromAgent } from "./controllers/agent/agentReservationController.js";
 import { clientLoginController, clientSignupController, clientValidationController, getUserController } from "./controllers/clientAuthController.js";
@@ -47,6 +47,8 @@ app.get("/create-reservation-agent", createReservationFromAgent);
 app.get("/businesses", getBusinessBySlug);
 
 app.get("/user-id-businesses", getBusinessByUserId);
+
+app.delete("/delete-time-slots", deleteTimeSlots);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () =>

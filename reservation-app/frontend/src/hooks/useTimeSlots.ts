@@ -100,3 +100,35 @@ export const createTimeSlots = () => {
 
   return { postTimeSlots, loading, error, message };
 };
+
+export const deleteTimeSlots = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const removeTimeSlots = async (businessId: number) => {
+    try {
+      setLoading(true);
+      setError(null);
+      setMessage(null);
+
+      const data = await apiClient(`/delete-time-slots?business_id=${businessId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (data?.message) {
+        setMessage(data.message);
+      }
+
+      return data;
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { removeTimeSlots, loading, error, message };
+};
