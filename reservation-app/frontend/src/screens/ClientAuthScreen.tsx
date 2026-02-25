@@ -10,175 +10,83 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
-import { useAuth } from "@/hooks/useAuth";
-import { useBusiness } from "@/hooks/useBusiness";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { supabase } from "@/lib/apiClient";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ClientAuthScreen = () => {
   const navigate = useNavigate();
-  const [password, setPassword] = useState("");
-  const [passwordVal, setPasswordVal] = useState("");
-  const [username, setUsername] = useState("");
-  const [isValidated, setIsValidated] = useState(false);
-  const [isSignup, setIsSignup] = useState(false);
-  const [isSetPassword, setIsSetPassword] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const { signup, validate, login, getCurrentBusinessUser, loading, error } = useAuth();
-  
-  const { fetchBusinessByUserId } = useBusiness();
-
-  useEffect(() => {
-    localStorage.removeItem("businessId");
-  }, []);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string | null>();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
-    if (isSignup && !isSetPassword) {
-      const res = await validate(username);
-      if (!res) return;
-      if (res.res === 0) {
-        setIsValidated(true);
-        setIsSetPassword(true);
-      } else {
-        setMessage(res.message);
-      }
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
+    setLoading(false);
+
+    if (error) {
+      setMessage(error.message);
       return;
     }
 
-    if (isSetPassword && isSignup) {
-      if (password !== passwordVal) {
-        setMessage("Las contraseñas deben ser iguales.");
-        return;
-      }
+    localStorage.setItem("userId", data.user.id);
 
-      const res = await signup(username, password);
-      if (!res) return;
-
-      await getCurrentBusinessUser();
-
-      navigate("/client-home");
-      return;
-    }
-    
-    const res = await login(username, password);
-    if (!res) return;
-
-    const user = await getCurrentBusinessUser();
-    console.log('user', user)
-
-    await fetchBusinessByUserId(user.id);
-
-    console.log("Login response:", res);
-    console.log("businessId:", localStorage.getItem("businessId"));
-
-    navigate("/client-home")
-  }
+    navigate("/client-home");
+  };
 
   return (
     <div className="flex items-center justify-center p-4">
       <Card className="w-full max-w-sm text-left">
         <CardHeader>
-          <CardTitle className="text-xl">
-            {isSignup ? "Validar mi cuenta" : "¡Bienvenido de vuelta!"}
-          </CardTitle>
+          <CardTitle className="text-xl">¡Bienvenido de vuelta!</CardTitle>
           <CardDescription>
-            {isSignup
-              ? "Ingresa tu usuario validar la cuenta."
-              : "Ingresa tu usuario y contraseña para acceder a tu cuenta."}
+            Ingresa tu correo y contraseña para acceder a tu cuenta.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
-              {!isSignup && (
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Usuario</Label>
-                  <Input
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                </div>
-              )}
-              {isSignup && (
-                <>
-                  <div className="grid gap-2">
-                    <Label>Usuario</Label>
-                    <Input
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                    />
-                  </div>
-                  {isValidated && (
-                    <div>
-                      <div className="grid gap-2">
-                        <Label>Contraseña</Label>
-                        <Input
-                          type="password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </div>
-
-                      <div className="grid gap-2 mt-5">
-                        <Label>Repetir Contraseña</Label>
-                        <Input
-                          type="password"
-                          value={passwordVal}
-                          onChange={(e) => setPasswordVal(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-              {!isSignup && (
-                <div className="grid gap-2">
-                  <Label>Contraseña</Label>
-                  <Input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-              )}
+              <div className="grid gap-2">
+                <Label htmlFor="email">Correo electrónico</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="password">Contraseña</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          {isSignup ? (
-            <Button type="submit" className="w-full" onClick={handleSubmit}>
-              {loading ? <Spinner className="size-5" /> : "Validar"}
-            </Button>
-          ) : (
-            <Button type="submit" className="w-full" onClick={handleSubmit}>
-              {loading ? <Spinner className="size-5" /> : "Acceder"}
-            </Button>
-          )}
-          {!isSignup ? (
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => setIsSignup(true)}
-            >
-              Validar mi usuario
-            </Button>
-          ) : (
-            <Button
-              className="w-full"
-              variant="outline"
-              onClick={() => setIsSignup(false)}
-            >
-              Ya tengo cuenta
-            </Button>
-          )}
-          <div>
-            {error && <p className="text-red-500">{error}</p>}
-            {message && <p className="text-red-500">{message}</p>}
-          </div>
+          <Button
+            type="submit"
+            className="w-full"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? <Spinner /> : "Iniciar sesión"}
+          </Button>
+          {message && <p className="text-red-500 text-sm">{message}</p>}
         </CardFooter>
       </Card>
     </div>

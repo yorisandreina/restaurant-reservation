@@ -23,10 +23,21 @@ const SetPasswordScreen = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
    useEffect(() => {
-     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-            setReady(true);
-        }
+     const {
+       data: { subscription },
+     } = supabase.auth.onAuthStateChange((event, session) => {
+       if (
+         (event === "PASSWORD_RECOVERY" ||
+           event === "SIGNED_IN" ||
+           event === "INITIAL_SESSION") &&
+         session
+       ) {
+         setReady(true);
+       }
+     });
+
+     supabase.auth.getSession().then(({ data: { session } }) => {
+       if (session) setReady(true);
      });
 
      return () => subscription.unsubscribe();
