@@ -10,66 +10,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
-import { supabase } from "@/lib/apiClient";
-import { useEffect, useState } from "react";
+import { useSetPassword } from "@/hooks/useSetPassword";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const SetPasswordScreen = () => {
   const navigate = useNavigate();
-  const [ready, setReady] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');
   const [passwordValidation, setPasswordValidation] = useState<string>('');
-  const [error, setError] = useState<string | null>();
-  const [loading, setLoading] = useState<boolean>(false);
 
-   useEffect(() => {
-     const {
-       data: { subscription },
-     } = supabase.auth.onAuthStateChange((event, session) => {
-       if (
-         (event === "PASSWORD_RECOVERY" ||
-           event === "SIGNED_IN" ||
-           event === "INITIAL_SESSION") &&
-         session
-       ) {
-         setReady(true);
-       }
-     });
+  const { setPassword: submitPassword, loading, error } = useSetPassword();
 
-     supabase.auth.getSession().then(({ data: { session } }) => {
-       if (session) setReady(true);
-     });
-
-     return () => subscription.unsubscribe();
-   }, []);
-
-   const handleSetPassword = async () => {
-     if (!ready) {
-       setError("Sesión inválida o expirada.");
-       return;
-     }
-
-     if (password !== passwordValidation) {
-       setError("Las contraseñas deben ser iguales.");
-       return;
-     }
-
-     try {
-       setLoading(true);
-       setError(null);
-
-       const { error } = await supabase.auth.updateUser({ password });
-
-       if (error) {
-         setError(error.message);
-         return;
-       }
-
-       navigate("/client-home");
-     } finally {
-       setLoading(false);
-     }
-   };
+  const handleSetPassword = async () => {
+    const success = await submitPassword(password, passwordValidation);
+    if (success) {
+        toast.success('Contraseña creada con éxito.')
+        navigate("/business-setup");
+    }
+  };
 
   return (
     <div className="flex items-center justify-center p-4">

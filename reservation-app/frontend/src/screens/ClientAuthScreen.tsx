@@ -10,35 +10,38 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
-import { supabase } from "@/lib/apiClient";
+import { useAuth } from "@/hooks/useAuth";
+import { useBusiness } from "@/hooks/useBusiness";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const ClientAuthScreen = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>();
+
+  const { login, loading, error } = useAuth();
+  const { fetchBusinessByUserId } = useBusiness();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    setLoading(false);
-
-    if (error) {
-      setMessage(error.message);
+    const user = await login(email, password);
+    if (!user) {
+      setMessage(error);
       return;
     }
 
-    localStorage.setItem("userId", data.user.id);
+    const business = await fetchBusinessByUserId(user.id);
+    if (!business) {
+      setMessage("No se encontró un negocio asociado a este usuario.");
+      return;
+    }
 
+    localStorage.setItem("userId", user.id);
+    toast.success("Credenciales correctas.");
     navigate("/client-home");
   };
 

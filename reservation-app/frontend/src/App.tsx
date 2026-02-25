@@ -8,19 +8,25 @@ import ClientScreen from './screens/ClientScreen';
 import TablesScreen from './screens/TablesScreen';
 import TimeSlotsScreen from './screens/TimeSlotsScreen';
 import SetPasswordScreen from './screens/SetPasswordScreen';
+import BusinessSetupScreen from './screens/BusinessSetupScreen';
+import { Toaster } from "sonner";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/r/:slug" element={<BookingScreen />} />
-      <Route path="/success" element={<SuccessScreen />} />
-      <Route path="/client-auth" element={<ClientAuthScreen />} />
-      <Route path="/client-details" element={<NewClientDetailsScreen />} />
-      <Route path="/client-home" element={<ClientScreen />} />
-      <Route path="/tables" element={<TablesScreen />} />
-      <Route path="/time-slots" element={<TimeSlotsScreen />} />
-      <Route path="/set-password" element={<SetPasswordScreen />} />
-    </Routes>
+    <>
+      <Toaster position="top-center" richColors />
+      <Routes>
+        <Route path="/r/:slug" element={<BookingScreen />} />
+        <Route path="/success" element={<SuccessScreen />} />
+        <Route path="/client-auth" element={<ClientAuthScreen />} />
+        <Route path="/client-details" element={<NewClientDetailsScreen />} />
+        <Route path="/client-home" element={<ClientScreen />} />
+        <Route path="/tables" element={<TablesScreen />} />
+        <Route path="/time-slots" element={<TimeSlotsScreen />} />
+        <Route path="/set-password" element={<SetPasswordScreen />} />
+        <Route path="/business-setup" element={<BusinessSetupScreen />} />
+      </Routes>
+    </>
   );
 }
 
