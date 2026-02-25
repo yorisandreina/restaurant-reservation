@@ -7,6 +7,7 @@ import NewClientDetailsScreen from './screens/NewClientDetailsScreen';
 import ClientScreen from './screens/ClientScreen';
 import TablesScreen from './screens/TablesScreen';
 import TimeSlotsScreen from './screens/TimeSlotsScreen';
+import SetPasswordScreen from './screens/SetPasswordScreen';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route path="/client-home" element={<ClientScreen />} />
       <Route path="/tables" element={<TablesScreen />} />
       <Route path="/time-slots" element={<TimeSlotsScreen />} />
+      <Route path="/set-password" element={<SetPasswordScreen />} />
     </Routes>
   );
 }
