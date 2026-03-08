@@ -77,7 +77,7 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
 
   if (error || errorRes) return <p className="text-red-500">Error: {error}</p>;
 
-  if (!reservationData?.data || reservationData?.data.length === 0)
+  if (!reservationData || reservationData?.length === 0)
     return (
       <div className="py-10">
         <EmptyState
@@ -88,7 +88,7 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
       </div>
     );
 
-  let list = reservationData?.data || [];
+  let list = reservationData || [];
 
   list = list.filter((r: any) =>
     r.name.toLowerCase().includes(filters.search.toLowerCase())
@@ -141,7 +141,9 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
             <Card className="w-full text-left mb-3" key={reservation.id}>
               <CardContent>
                 <div className="flex flex-row justify-between items-center mb-1">
-                  <strong>{reservation.name} | {reservation.table_name.name}</strong>
+                  <strong>
+                    {reservation.name} | {reservation.table_name?.name}
+                  </strong>
                   <CircleX
                     size={20}
                     color="#e20404"
@@ -150,7 +152,9 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
                   />
                 </div>
 
-                <p className="mb-1">{reservation.time} - {reservation.people}pax</p>
+                <p className="mb-1">
+                  {reservation.time} - {reservation.people}pax
+                </p>
 
                 <div className="flex flex-row justify-between items-center gap-2">
                   <p>{reservation.phone}</p>

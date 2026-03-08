@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/apiClient";
+import { supabase } from "@/lib/apiClient";
 import { useState, useEffect } from "react";
 
 interface Params {
@@ -6,15 +6,28 @@ interface Params {
   refreshKey: number;
 }
 
+interface Reservation {
+  id: number;
+  created_at: string;
+  name: string;
+  phone: string;
+  date: string;
+  time: string;
+  people: number;
+  status: string;
+  table_id: number;
+  table_name: { name: string };
+}
+
 export const useGetReservations = (params: Params) => {
-  const [reservationData, setReservationData] = useState<any | null>(null);
+  const [reservationData, setReservationData] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchReservations = async () => {
       if (!params.businessId) {
-        setError("Todos los campos son obligatorios");
+        setError("Business ID es obligatorio.");
         return;
       }
 
@@ -22,16 +35,39 @@ export const useGetReservations = (params: Params) => {
         setLoading(true);
         setError(null);
 
-        const data = await apiClient(`/reservations?business_id=${params.businessId}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
+        const { data, error } = await supabase
+          .from("Reservations")
+          .select(
+            `
+            id,
+            created_at,
+            name,
+            phone,
+            date,
+            time,
+            people,
+            status,
+            table_id,
+            table_name:Tables(name)         
+          `
+          )
+          .eq("business_id", params.businessId)
+          .order("date", { ascending: true });
 
-        setReservationData(data);
+        console.log(data)
+        console.log(error)
+
+        if (error) {
+          setError(error.message);
+          setReservationData([]);
+          return;
+        }
+
+        setReservationData((data as any) || []);
       } catch (err: any) {
         console.error("Error fetching reservations:", err);
         setError(err.message || "Error desconocido");
-        setReservationData(null);
+        setReservationData([]);
       } finally {
         setLoading(false);
       }
