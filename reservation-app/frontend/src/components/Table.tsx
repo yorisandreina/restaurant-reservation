@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Spinner } from "./ui/spinner";
 import { Card, CardContent } from "./ui/card";
 import { Trash2, Users } from "lucide-react";
-import { eraseTable, getTables } from "@/hooks/useTables";
+import { useGetTables } from "@/hooks/useGetTables";
+import { useDeleteTable } from "@/hooks/useDeleteTable";
 import { Badge } from "./ui/badge";
 import ConfirmationModal from "./ConfirmationModal";
 import EmptyState from "./EmptyState";
@@ -22,11 +23,8 @@ interface Tables {
 }
 
 const Table: React.FC<TableProps> = ({ businessId, refreshKey, onRefresh }) => {
-  const { loading, error, data } = getTables({
-    businessId,
-    refreshKey,
-  });
-  const { loadingTab, errorTab, deleteTable } = eraseTable();
+  const { loading, error, data } = useGetTables({ businessId, refreshKey });
+  const { loadingTab, errorTab, deleteTable } = useDeleteTable();
 
   const [selectedTableId, setSelectedTableId] = React.useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -54,7 +52,7 @@ const Table: React.FC<TableProps> = ({ businessId, refreshKey, onRefresh }) => {
 
   if (error || errorTab) return <p className="text-red-500">Error: {error}</p>;
 
-  if (!data?.data || data?.data.length === 0)
+  if (!data || data?.length === 0)
     return (
       <div className="py-10">
         <EmptyState
@@ -67,7 +65,7 @@ const Table: React.FC<TableProps> = ({ businessId, refreshKey, onRefresh }) => {
 
   return (
     <div className="flex flex-col w-full gap-4 items-center p-2">
-      {data?.data.map((table: Tables) => (
+      {data?.map((table: Tables) => (
         <Card className="w-full max-w-sm text-left py-5 px-1">
           <CardContent>
             <div className="flex flex-row justify-between items-center">

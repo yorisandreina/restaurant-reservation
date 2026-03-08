@@ -1,7 +1,7 @@
 import Table from "@/components/Table";
 import TableFormModal from "@/components/TableFormModal";
 import { Button } from "@/components/ui/button";
-import { createTable } from "@/hooks/useTables";
+import { useCreateTable } from "@/hooks/useCreateTables";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ const TablesScreen = () => {
 
   const businessId = Number(localStorage.getItem("businessId"));
 
-  const { postTable, loading, error } = createTable();
+  const { postTable, loading, error } = useCreateTable();
 
   useEffect(() => {
     if (!businessId) {
