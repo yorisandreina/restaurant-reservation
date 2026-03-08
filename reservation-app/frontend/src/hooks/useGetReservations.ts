@@ -54,9 +54,6 @@ export const useGetReservations = (params: Params) => {
           .eq("business_id", params.businessId)
           .order("date", { ascending: true });
 
-        console.log(data)
-        console.log(error)
-
         if (error) {
           setError(error.message);
           setReservationData([]);

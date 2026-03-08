@@ -2,7 +2,8 @@ import TimeSlotFormModal from "@/components/TimeSlotFormModal";
 import TimeSlots from "@/components/TimeSlots";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { createTimeSlots, deleteTimeSlots } from "@/hooks/useTimeSlots";
+import { useCreateTimeSlots } from "@/hooks/useCreateTimeSlots";
+import { useDeleteTimeSlots } from "@/hooks/useDeleteTimeSlots";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,13 +19,12 @@ const TimeSlotsScreen = () => {
 
   const businessId = Number(localStorage.getItem("businessId"));
 
-  const { postTimeSlots, loading, error } = createTimeSlots();
+  const { postTimeSlots, loading, error } = useCreateTimeSlots();
   const {
     removeTimeSlots,
     loading: deleteLoading,
     error: deleteError,
-    message: deleteMessage,
-  } = deleteTimeSlots();
+  } = useDeleteTimeSlots();
 
   useEffect(() => {
     if (!businessId) {
@@ -42,47 +42,44 @@ const TimeSlotsScreen = () => {
       maxDuration: number;
     }[]
   ) => {
-    try {
-      const data = await postTimeSlots(
-        formData.map((day) => ({
-          businessId: businessId,
-          dow: day.dow,
-          closed: day.closed,
-          startTime: day.startTime,
-          endTime: day.endTime,
-          slotMin: day.slotMin,
-          maxDuration: day.maxDuration,
-        }))
-      );
+    const success = await postTimeSlots(
+      formData.map((day) => ({
+        businessId,
+        dow: day.dow,
+        closed: day.closed,
+        startTime: day.startTime,
+        endTime: day.endTime,
+        slotMin: day.slotMin,
+        maxDuration: day.maxDuration,
+      }))
+    );
 
+    if (success) {
       setOpenModal(false);
       setIsAlertError(false);
-      setAlertMessage(data?.message || "Horarios guardados correctamente.");
-      setShowAlert(true);
+      setAlertMessage("Horarios guardados correctamente.");
       setRefreshKey((prev) => prev + 1);
-    } catch (err: any) {
+    } else {
       setIsAlertError(true);
-      setAlertMessage(err?.message || "No se pudieron guardar los horarios.");
-      setShowAlert(true);
+      setAlertMessage(error || "No se pudieron guardar los horarios.");
     }
+
+    setShowAlert(true);
   };
 
   const handleDelete = async () => {
-    try {
-      const data = await removeTimeSlots(businessId);
+    const success = await removeTimeSlots(businessId);
+
+    if (success) {
       setIsAlertError(false);
-      setAlertMessage(
-        data?.message || deleteMessage || "Horarios eliminados correctamente."
-      );
-      setShowAlert(true);
+      setAlertMessage("Horarios eliminados correctamente.");
       setRefreshKey((prev) => prev + 1);
-    } catch (err: any) {
+    } else {
       setIsAlertError(true);
-      setAlertMessage(
-        err?.message || deleteError || "No se pudieron eliminar los horarios."
-      );
-      setShowAlert(true);
+      setAlertMessage(deleteError || "No se pudieron eliminar los horarios.");
     }
+
+    setShowAlert(true);
   };
 
   useEffect(() => {
@@ -94,7 +91,7 @@ const TimeSlotsScreen = () => {
 
   return (
     <div className="flex flex-col p-4 text-center items-center">
-      <div className="flex flex-row items-center w-sm gap-4 mb-4 ">
+      <div className="flex flex-row items-center w-sm gap-4 mb-4">
         <ArrowLeft onClick={() => navigate(-1)} className="cursor-pointer" />
         <h1 className="text-2xl font-semibold">Horario</h1>
       </div>
@@ -105,7 +102,7 @@ const TimeSlotsScreen = () => {
       )}
       {hasSlots === false && !loading && (
         <Button
-          variant={"outline"}
+          variant="outline"
           className="w-sm mb-4"
           onClick={() => setOpenModal(true)}
         >
@@ -131,7 +128,9 @@ const TimeSlotsScreen = () => {
           onClick={handleDelete}
           disabled={deleteLoading}
         >
-          {deleteLoading ? "Eliminando horarios..." : "Eliminar horarios existentes"}
+          {deleteLoading
+            ? "Eliminando horarios..."
+            : "Eliminar horarios existentes"}
         </Button>
       )}
       {showAlert && alertMessage && (

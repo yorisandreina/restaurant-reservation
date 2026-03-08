@@ -29,9 +29,9 @@ const ConfirmationModal: React.FC<BookingDetailsModalProps> = ({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>¿Seguro que quiere eliminar estos datos?</DialogTitle>
+          <DialogTitle>¿Seguro que quiere eliminar esta reserva?</DialogTitle>
           <DialogDescription>
-            Recuerde que no puede recuperarlos una vez haya confirmado
+            Recuerde que no puede recuperarla una vez haya confirmado
             la eliminación.
           </DialogDescription>
         </DialogHeader>

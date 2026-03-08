@@ -2,7 +2,7 @@ import React from "react";
 import { Spinner } from "./ui/spinner";
 import { Card, CardContent } from "./ui/card";
 import { Info } from "lucide-react";
-import { getTimeSlots } from "@/hooks/useTimeSlots";
+import { useGetTimeSlots } from "@/hooks/useGetTimeSlots";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
 import EmptyState from "./EmptyState";
 
@@ -23,11 +23,11 @@ interface TimeSlot {
 }
 
 const TimeSlots: React.FC<TimeSlotProps> = ({ businessId, refreshKey, onSlotsStatusChange }) => {
-  const { loading, error, slots } = getTimeSlots({ businessId, refreshKey });
+  const { loading, error, slots } = useGetTimeSlots({ businessId, refreshKey });
 
   React.useEffect(() => {
     if (onSlotsStatusChange) {
-      const hasData = Array.isArray(slots?.data) && slots.data.length > 0;
+      const hasData = Array.isArray(slots) && slots.length > 0;
       onSlotsStatusChange(hasData);
     }
   }, [slots, onSlotsStatusChange]);
@@ -55,7 +55,7 @@ const TimeSlots: React.FC<TimeSlotProps> = ({ businessId, refreshKey, onSlotsSta
 
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
-  if (!slots?.data || slots?.data.length === 0)
+  if (!slots || slots?.length === 0)
     return (
       <div className="py-10">
         <EmptyState
@@ -69,7 +69,7 @@ const TimeSlots: React.FC<TimeSlotProps> = ({ businessId, refreshKey, onSlotsSta
   return (
     <div className="flex flex-col w-full gap-4 items-center p-2">
       <Card className="py-5 px-2">
-        {[...slots?.data]
+        {[...slots]
           .sort((a, b) => a.dow - b.dow)
           .map((timeSlot: TimeSlot) => (
             <CardContent key={timeSlot.id}>
