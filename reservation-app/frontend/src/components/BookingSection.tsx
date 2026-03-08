@@ -39,7 +39,6 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
 
   const handleSubmit = async (formData: {
     name: string;
-    lastName: string;
     phone: string;
     email: string;
   }) => {
@@ -50,7 +49,6 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
 
     const reservationCreated = await createReservation({
       name: formData.name,
-      lastName: formData.lastName,
       phone: formData.phone,
       email: formData.email,
       date,

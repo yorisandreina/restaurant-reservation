@@ -3,7 +3,7 @@ import React from "react";
 import { Spinner } from "./ui/spinner";
 import { Card, CardContent } from "./ui/card";
 import { CircleX } from "lucide-react";
-import { eraseReservation } from "@/hooks/useReservation";
+import { useDeleteReservation } from "@/hooks/useDeleteReservation";
 import ConfirmationModal from "./ConfirmationModal";
 import EmptyState from "./EmptyState";
 import ReservationFilter from "./ReservationFilter";
@@ -34,7 +34,7 @@ const CurrentReservations: React.FC<ReservationProps> = ({ businessId, refreshKe
     businessId,
     refreshKey,
   });
-  const { loadingRes, errorRes, deleteReservation } = eraseReservation();
+  const { loadingRes, errorRes, deleteReservation } = useDeleteReservation();
 
   const [selectedReservationId, setSelectedReservationId] = React.useState<
     number | null

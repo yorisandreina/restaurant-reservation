@@ -18,6 +18,7 @@ interface TimeSlot {
   cantidad_mesas_disp: number;
   mesas_disponibles: [];
   mesa_sugerida: number;
+  message?: string;
 }
 
 const AvailableTimeSlots: React.FC<AvailabilityDisplayProps> = ({
