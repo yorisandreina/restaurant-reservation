@@ -9,7 +9,7 @@ import BookingDetailsModal from "@/components/BookingDetailsModal";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { useReservation } from "@/hooks/useReservation";
 import { Spinner } from "@/components/ui/spinner";
-import { useBusiness } from "@/hooks/useBusiness";
+import { useBusinessBySlug } from "@/hooks/useBusinessBySlug";
 
 const BookingScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const BookingScreen: React.FC = () => {
 
   const { loading, error, createReservation } = useReservation();
   const { slug } = useParams<{ slug: string }>();
-  const { business, loadingBusiness, errorBusiness } = useBusiness(slug);
+  const { business, loadingBusiness, errorBusiness } = useBusinessBySlug(slug); 
 
   const handleOpenModal = () => {
     if (!date || !selectedTimeSlot) {
@@ -38,9 +38,13 @@ const BookingScreen: React.FC = () => {
     phone: string;
     email: string;
   }) => {
+    if (!business) {
+      console.error("No hay un negocio asociado.");
+      return;
+    }
+
     const reservationCreated = await createReservation({
       name: formData.name,
-      lastName: formData.lastName,
       phone: formData.phone,
       email: formData.email,
       date,
