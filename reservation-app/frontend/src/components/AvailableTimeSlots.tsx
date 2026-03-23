@@ -40,8 +40,9 @@ const AvailableTimeSlots: React.FC<AvailabilityDisplayProps> = ({
 
   if (loading) return <Spinner className="size-8"/>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
-  if (!availability || availability.length === 0)
+  if (!availability?.length || !availability[0]?.hora) {
     return <p>No hay disponibilidad en esa fecha.</p>;
+  }
   if (availability.length === 1 && availability[0].message) {
     return <p className="w-sm">{availability[0].message} Puedes llamarnos para ayudarte con la solicitud.</p>;
   }
