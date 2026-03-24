@@ -8,6 +8,7 @@ interface TimeSlot {
   cantidad_mesas_disp: number;
   mesas_disponibles: [];
   mesa_sugerida: number;
+  closed?: boolean;
 }
 
 export const useAvailability = (

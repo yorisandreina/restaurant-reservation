@@ -19,6 +19,7 @@ interface TimeSlot {
   mesas_disponibles: [];
   mesa_sugerida: number;
   message?: string;
+  closed?: boolean;
 }
 
 const AvailableTimeSlots: React.FC<AvailabilityDisplayProps> = ({
@@ -40,7 +41,15 @@ const AvailableTimeSlots: React.FC<AvailabilityDisplayProps> = ({
 
   if (loading) return <Spinner className="size-8"/>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
-  if (!availability?.length || !availability[0]?.hora) {
+  if (availability?.[0]?.message) {
+    return (
+      <p className="w-sm text-center">
+        {availability[0].message}
+        {availability[0].closed}
+      </p>
+    );
+  }
+  if (!availability?.length) {
     return <p>No hay disponibilidad en esa fecha.</p>;
   }
   if (availability.length === 1 && availability[0].message) {
