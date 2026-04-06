@@ -1,28 +1,38 @@
 import { supabase } from "@/lib/apiClient";
 import { useState } from "react";
 
+interface LoginResult {
+  user: any | null;
+  error: string | null;
+}
+
 export const useAuth = () => {
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const login = async (email: string, password: string) => {
-    setLoading(true);
-    setError(null);
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<LoginResult> => {
+    try {
+      setError(null);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    setLoading(false);
+      if (error) {
+        setError(error.message);
+        return { user: null, error: error.message };
+      }
 
-    if (error) {
-      setError(error.message);
-      return null;
+      return { user: data.user, error: null };
+    } catch (err: any) {
+      const message = err?.message || "Error al iniciar sesión.";
+      setError(message);
+      return { user: null, error: message };
     }
-
-    return data.user;
   };
 
-  return { login, loading, error };
+  return { login, error };
 };

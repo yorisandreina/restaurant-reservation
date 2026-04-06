@@ -1,3 +1,4 @@
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,31 +19,46 @@ import { toast } from "sonner";
 
 const ClientAuthScreen = () => {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [message, setMessage] = useState<string | null>();
+  const [message, setMessage] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const { login, loading, error } = useAuth();
+  const { login } = useAuth();
   const { fetchBusinessByUserId } = useBusiness();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const user = await login(email, password);
-    if (!user) {
-      setMessage(error);
-      return;
-    }
+    setMessage(null);
+    setSubmitting(true);
 
-    const business = await fetchBusinessByUserId(user.id);
-    if (!business) {
-      setMessage("No se encontró un negocio asociado a este usuario.");
-      return;
-    }
+    try {
+      const { user, error } = await login(email, password);
 
-    localStorage.setItem("userId", user.id);
-    toast.success("Credenciales correctas.");
-    navigate("/client-home");
+      if (error || !user) {
+        setMessage("Credenciales inválidas.");
+        setSubmitting(false);
+        return;
+      }
+
+      const business = await fetchBusinessByUserId(user.id);
+
+      if (!business) {
+        setMessage("No se encontró un negocio asociado a este usuario.");
+        setSubmitting(false);
+        return;
+      }
+
+      localStorage.setItem("userId", user.id);
+      toast.success("Credenciales correctas.");
+
+      navigate("/client-home");
+    } catch (err: any) {
+      setMessage(err?.message || "Ha ocurrido un error al iniciar sesión.");
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -54,8 +70,9 @@ const ClientAuthScreen = () => {
             Ingresa tu correo y contraseña para acceder a tu cuenta.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit}>
+
+        <form onSubmit={handleSubmit}>
+          <CardContent>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Correo electrónico</Label>
@@ -64,9 +81,11 @@ const ClientAuthScreen = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={submitting}
                   required
                 />
               </div>
+
               <div className="grid gap-2">
                 <Label htmlFor="password">Contraseña</Label>
                 <Input
@@ -74,23 +93,27 @@ const ClientAuthScreen = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={submitting}
                   required
                 />
               </div>
             </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex-col gap-2">
-          <Button
-            type="submit"
-            className="w-full"
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? <Spinner /> : "Iniciar sesión"}
-          </Button>
-          {message && <p className="text-red-500 text-sm">{message}</p>}
-        </CardFooter>
+          </CardContent>
+
+          <CardFooter className="flex-col gap-2">
+            <Button type="submit" className="w-full mt-5" disabled={submitting}>
+              {submitting ? <Spinner /> : "Iniciar sesión"}
+            </Button>
+            {message && (
+              <Alert
+                variant="default"
+                className="w-full mt-5 border-none justify-center flex bg-red-100 text-red-700"
+              >
+                <AlertTitle>{message}</AlertTitle>
+              </Alert>
+            )}
+          </CardFooter>
+        </form>
       </Card>
     </div>
   );
