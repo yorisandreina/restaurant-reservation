@@ -11,6 +11,51 @@ interface TimeSlotInput {
   maxDuration: number;
 }
 
+const timeToMinutes = (time: string): number => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
+const validateTimeSlot = (day: TimeSlotInput): string | null => {
+  if (day.closed) return null;
+
+  if (!day.startTime || !day.endTime) {
+    return `El día ${day.dow} debe tener hora de inicio y fin.`;
+  }
+
+  if (!day.slotMin || day.slotMin <= 0) {
+    return `El día ${day.dow} tiene un slot inválido.`;
+  }
+
+  if (!day.maxDuration || day.maxDuration <= 0) {
+    return `El día ${day.dow} tiene una duración máxima inválida.`;
+  }
+
+  const startMinutes = timeToMinutes(day.startTime);
+  let endMinutes = timeToMinutes(day.endTime);
+
+  const closesAtMidnight = day.endTime === "00:00";
+  if (closesAtMidnight) {
+    endMinutes = 24 * 60;
+  }
+
+  if (!closesAtMidnight && endMinutes <= startMinutes) {
+    return `El día ${day.dow} tiene una hora de fin anterior o igual a la de inicio.`;
+  }
+
+  const openMinutes = endMinutes - startMinutes;
+
+  if (openMinutes < day.maxDuration) {
+    return `El día ${day.dow} no permite reservas: la duración máxima excede la franja horaria.`;
+  }
+
+  if (day.slotMin > day.maxDuration) {
+    return `El día ${day.dow} tiene un slot mayor que la duración máxima.`;
+  }
+
+  return null;
+};
+
 export const useCreateTimeSlots = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,6 +64,14 @@ export const useCreateTimeSlots = () => {
     try {
       setLoading(true);
       setError(null);
+
+      for (const day of body) {
+        const validationError = validateTimeSlot(day);
+        if (validationError) {
+          setError(validationError);
+          return false;
+        }
+      }
 
       const { error } = await supabase.from("Time Slots").insert(
         body.map((d) => ({
