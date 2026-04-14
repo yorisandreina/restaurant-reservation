@@ -5,6 +5,7 @@ import {
 } from "./ui/card";
 import { ChevronRight, LogIn } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
+import { toast } from "sonner";
 
 const SettingsSection: React.FC = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const SettingsSection: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem("businessId");
     navigate("/client-auth");
+    toast.success("Has salido de tu cuenta.");
   };
 
   return (
