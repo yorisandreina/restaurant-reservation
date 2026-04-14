@@ -98,7 +98,7 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
         className="mt-6 w-full max-w-sm hover:bg-transparent"
         variant="outline"
         onClick={handleOpenModal}
-        disabled={!date || !selectedTimeSlot || !businessName}
+        disabled={!date || !selectedTimeSlot}
       >
         {loading ? <Spinner className="size-5" /> : "Continuar"}
       </Button>
