@@ -54,7 +54,8 @@ export const useGetReservations = (params: Params) => {
           )
           .eq("business_id", params.businessId)
           .gte("date", today)
-          .order("date", { ascending: true });
+          .order("date", { ascending: true })
+          .order("time", { ascending: true });
 
         if (error) {
           setError(error.message);
