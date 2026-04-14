@@ -35,6 +35,7 @@ export const useGetReservations = (params: Params) => {
         setLoading(true);
         setError(null);
 
+        const today = new Date().toISOString().split("T")[0];
         const { data, error } = await supabase
           .from("Reservations")
           .select(
@@ -52,6 +53,7 @@ export const useGetReservations = (params: Params) => {
           `
           )
           .eq("business_id", params.businessId)
+          .gte("date", today)
           .order("date", { ascending: true });
 
         if (error) {
