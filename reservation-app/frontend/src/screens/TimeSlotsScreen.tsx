@@ -16,6 +16,7 @@ const TimeSlotsScreen = () => {
   const [hasSlots, setHasSlots] = useState<boolean | null>(null);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [isAlertError, setIsAlertError] = useState(false);
+  const [slotsLoading, setSlotsLoading] = useState(true);
 
   const businessId = Number(localStorage.getItem("businessId"));
 
@@ -100,7 +101,7 @@ const TimeSlotsScreen = () => {
           Pasa el cursor sobre el ícono para ver más información.
         </p>
       )}
-      {hasSlots === false && !loading && (
+      {hasSlots === false && !slotsLoading && (
         <Button
           variant="outline"
           className="w-sm mb-4"
@@ -113,6 +114,7 @@ const TimeSlotsScreen = () => {
         businessId={businessId}
         refreshKey={refreshKey}
         onSlotsStatusChange={setHasSlots}
+        onLoadingChange={setSlotsLoading}
       />
       <TimeSlotFormModal
         open={openModal}

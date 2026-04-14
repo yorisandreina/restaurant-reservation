@@ -10,6 +10,7 @@ interface TimeSlotProps {
   businessId: number;
   refreshKey: number;
   onSlotsStatusChange?: (hasSlots: boolean) => void;
+  onLoadingChange: (loading: boolean) => void;
 }
 
 interface TimeSlot {
@@ -22,8 +23,17 @@ interface TimeSlot {
   closed: boolean;
 }
 
-const TimeSlots: React.FC<TimeSlotProps> = ({ businessId, refreshKey, onSlotsStatusChange }) => {
+const TimeSlots: React.FC<TimeSlotProps> = ({
+  businessId,
+  refreshKey,
+  onSlotsStatusChange,
+  onLoadingChange,
+}) => {
   const { loading, error, slots } = useGetTimeSlots({ businessId, refreshKey });
+
+  React.useEffect(() => {
+    onLoadingChange(loading);
+  }, [loading, onLoadingChange]);
 
   React.useEffect(() => {
     if (onSlotsStatusChange) {
