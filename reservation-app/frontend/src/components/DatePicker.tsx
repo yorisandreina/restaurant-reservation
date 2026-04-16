@@ -18,6 +18,12 @@ interface Props {
 const DatePicker: React.FC<Props> = ({ value, showLabel, onChange }) => {
   const [open, setOpen] = React.useState(false);
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const maxDate = new Date(today);
+  maxDate.setMonth(maxDate.getMonth() + 3);
+
   const selectedDate = value ? new Date(value) : undefined;
 
   const handleSelect = (date: Date | undefined) => {
@@ -29,7 +35,9 @@ const DatePicker: React.FC<Props> = ({ value, showLabel, onChange }) => {
 
   return (
     <div className="flex gap-2 items-center">
-      {showLabel && <label className="text-sm font-small text-gray-400">Fecha</label>}
+      {showLabel && (
+        <label className="text-sm font-small text-gray-400">Fecha</label>
+      )}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -54,9 +62,12 @@ const DatePicker: React.FC<Props> = ({ value, showLabel, onChange }) => {
             selected={selectedDate}
             captionLayout="dropdown"
             onSelect={handleSelect}
-            disabled={(date) =>
-              date < new Date(new Date().setHours(0, 0, 0, 0))
-            }
+            startMonth={today}
+            endMonth={maxDate}
+            disabled={{
+              before: today,
+              after: maxDate,
+            }}
           />
         </PopoverContent>
       </Popover>
