@@ -86,7 +86,11 @@ const BookingScreen: React.FC = () => {
     <div className="min-h-screen bg-white flex flex-col items-center">
       <Header name={business.name} />
       <div className="flex flex-wrap item-center justify-between pt-4 pb-5 gap-4">
-        <PeoplePicker value={people} onChange={setPeople} />
+        <PeoplePicker
+          value={people}
+          onChange={setPeople}
+          businessId={business.id}
+        />
         <DatePicker value={date} showLabel={true} onChange={setDate} />
       </div>
       <div className="flex items-center w-full max-w-sm border-t border-gray-300"></div>
@@ -112,7 +116,7 @@ const BookingScreen: React.FC = () => {
       >
         {loading ? <Spinner className="size-5" /> : "Continuar"}
       </Button>
-{/*       <Button
+      {/*       <Button
         className="mt-4 w-full max-w-sm hover:bg-transparent"
         variant="outline"
         onClick={() => navigate("/client-auth")}

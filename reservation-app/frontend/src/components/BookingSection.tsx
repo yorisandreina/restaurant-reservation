@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PeoplePicker from "../components/PeoplePicker";
 import DatePicker from "../components/DatePicker";
 import AvailableTimeSlots from "../components/AvailableTimeSlots";
@@ -20,14 +20,8 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [businessName, setBusinessName] = useState<string | null>(null);
 
   const { loading, error, createReservation } = useReservation();
-
-  useEffect(() => {
-    const name = localStorage.getItem("businessName");
-    setBusinessName(name);
-  }, []);
 
   const handleOpenModal = () => {
     if (!date || !selectedTimeSlot) {
@@ -42,8 +36,8 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
     phone: string;
     email: string;
   }) => {
-    if (!businessName || businessName === "undefined") {
-      console.error("Invalid businessName", businessName);
+    if (!businessId) {
+      console.error("Business id is required for this action");
       return;
     }
 
@@ -56,7 +50,6 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
       time: selectedTimeSlot,
       businessId: businessId,
       tableId: tableId,
-      businessName
     });
 
     if (reservationCreated) {
@@ -76,7 +69,11 @@ const BookingSection: React.FC<ReservationProps> = ({ businessId }) => {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">
       <div className="flex flex-wrap item-center justify-between pt-4 pb-5 gap-4">
-        <PeoplePicker value={people} onChange={setPeople} />
+        <PeoplePicker
+          value={people}
+          onChange={setPeople}
+          businessId={businessId}
+        />
         <DatePicker value={date} showLabel={true} onChange={setDate} />
       </div>
       <div className="flex items-center w-full max-w-sm border-t border-gray-300"></div>

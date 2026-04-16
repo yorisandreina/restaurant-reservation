@@ -10,7 +10,7 @@ interface ReservationParams {
   time: string;
   businessId: number;
   tableId: number;
-  businessName: string | null;
+  businessName?: string | null;
 }
 
 export const useReservation = () => {
@@ -39,7 +39,7 @@ export const useReservation = () => {
       !time ||
       !businessId ||
       !tableId ||
-      !businessName
+      businessName != null
     ) {
       setError("Todos los campos son obligatorios");
       return false;
