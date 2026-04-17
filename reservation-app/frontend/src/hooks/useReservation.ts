@@ -49,6 +49,8 @@ export const useReservation = () => {
       setLoading(true);
       setError(null);
 
+      const res_key = `${businessId}-${tableId}-${date}-${time}`;
+
       const { error } = await supabase.from("Reservations").insert({
         business_id: businessId,
         table_id: tableId,
@@ -59,6 +61,7 @@ export const useReservation = () => {
         email,
         time,
         status: "CONFIRMED",
+        res_key: res_key,
       });
 
       if (error) {
