@@ -10,6 +10,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { useReservation } from "@/hooks/useReservation";
 import { Spinner } from "@/components/ui/spinner";
 import { useBusinessBySlug } from "@/hooks/useBusinessBySlug";
+import NotFoundPage from "@/components/ui/NotFoundPage";
 
 const BookingScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -73,14 +74,29 @@ const BookingScreen: React.FC = () => {
     }
   };
 
-  if (loadingBusiness || business === undefined) return (
-    <div className="flex justify-center items-center w-full h-full mt-5">
-      <Spinner className="size-8" />
-    </div>
-  );
-  if (errorBusiness) return <p>Error: {error}</p>;
-  if (!business)
-    return <p>Restaurante no encontrado.</p>;
+  if (loadingBusiness || business === undefined) {
+    return (
+      <div className="flex justify-center items-center w-full h-full mt-5">
+        <Spinner className="size-8" />
+      </div>
+    );
+  }
+
+  if (errorBusiness) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
+        <h1 className="text-2xl font-semibold mb-2">
+          No pudimos cargar este restaurante
+        </h1>
+        <p className="text-gray-500 mb-4">
+          Ha ocurrido un problema al cargar la información. Inténtalo de nuevo
+          en unos minutos.
+        </p>
+      </div>
+    );
+  }
+
+  if (!business) return <NotFoundPage />;
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">

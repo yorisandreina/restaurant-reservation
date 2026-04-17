@@ -10,6 +10,7 @@ import TimeSlotsScreen from './screens/TimeSlotsScreen';
 import SetPasswordScreen from './screens/SetPasswordScreen';
 import BusinessSetupScreen from './screens/BusinessSetupScreen';
 import { Toaster } from "sonner";
+import NotFoundPage from './components/ui/NotFoundPage';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/time-slots" element={<TimeSlotsScreen />} />
         <Route path="/set-password" element={<SetPasswordScreen />} />
         <Route path="/business-setup" element={<BusinessSetupScreen />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );
