@@ -26,9 +26,9 @@ export const useReservation = () => {
       people,
       time,
       businessId,
-      tableId,
-      businessName,
+      tableId
     } = params;
+    console.log(params)
 
     if (
       !name ||
@@ -38,8 +38,7 @@ export const useReservation = () => {
       !people ||
       !time ||
       !businessId ||
-      !tableId ||
-      businessName != null
+      !tableId
     ) {
       setError("Todos los campos son obligatorios");
       return false;

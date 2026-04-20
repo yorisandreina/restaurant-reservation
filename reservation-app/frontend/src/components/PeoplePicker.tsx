@@ -34,7 +34,7 @@ const PeoplePicker: React.FC<Props> = ({ value, onChange, businessId }) => {
         return;
       }
 
-      const maxCapacity = data?.[0]?.max_capacity ?? 10;
+      const maxCapacity = data?.[0]?.max_capacity;
       setMaxPeople(maxCapacity);
     };
 
