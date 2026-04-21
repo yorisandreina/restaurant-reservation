@@ -37,7 +37,7 @@ export const useBusinessSetup = () => {
       const { error } = await supabase.from("Businesses").insert({
         user_id: user.id,
         name: fields.name,
-        phone_number: fields.phone,
+        phone: fields.phone,
         address: fields.address,
         slug: slug,
       });
